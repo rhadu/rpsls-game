@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "gc": "node ./scripts/generate_component/index.js"
   },
   "dependencies": {
     "@types/node": "18.15.11",
