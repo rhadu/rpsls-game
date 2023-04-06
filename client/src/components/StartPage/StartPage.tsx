@@ -11,7 +11,7 @@ const StartPage = ({}: IStartPageProps) => {
   return (
     <motion.main className="flex flex-col items-center justify-between h-full">
       <motion.div className="py-10">
-        <Logo/>
+        <Logo />
       </motion.div>
 
       <motion.div exit={{ y: 20, opacity: 0 }} className="flex flex-col gap-32">
@@ -21,15 +21,17 @@ const StartPage = ({}: IStartPageProps) => {
           </p>
         </motion.div>
         <div className="flex gap-12">
-          <Link href="/single" className="flex-1 ">
-            <a className="w-full px-12 py-4 text-xl font-semibold transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105">
-              VS. Sheldon
-            </a>
+          <Link
+            href="/single"
+            className="flex-1 text-center w-full px-12 py-4 text-xl font-semibold transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"
+          >
+            VS. Sheldon
           </Link>
-          <Link href="/" className="flex-1 ">
-            <button className="w-full px-12 py-4 text-xl font-semibold transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105">
-              VS. Friend or Foe
-            </button>
+          <Link
+            href="/"
+            className="flex-1 text-center w-full px-12 py-4 text-xl font-semibold transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"
+          >
+            VS. Friend or Foe
           </Link>
         </div>
       </motion.div>
