@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+body > div:first-child,
+div#__next,
+div#__next > div {
+  height: 100%;
+}
+
+body {
+  background: linear-gradient(235deg,hsl(154, 68%, 40%) 0%,hsl(214, 56%, 51%) 100%)
+}
