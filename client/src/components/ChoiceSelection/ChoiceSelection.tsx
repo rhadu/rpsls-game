@@ -1,8 +1,9 @@
 import React from "react"
 import { motion } from "framer-motion"
 import { GameState } from "@/types/game"
-import Logo from "../Logo"
 import useGameState from "@/store/game"
+import Logo from "../Logo"
+import Choice from "../Choice"
 
 export interface IChoiceSelectionProps {}
 
@@ -45,11 +46,10 @@ const CHOICES = [
   },
 ]
 const ChoiceSelection = ({}: IChoiceSelectionProps) => {
-  const { setGameState } = useGameState((state) => ({
-    setGameState: state.setGameState,
-  }))
-  function handleClick(choice: string) {
-    console.log({ choice })
+  const { setGameState, setPlayerChoice } = useGameState()
+  
+  function handleChoiceSelection(choice: string) {
+    setPlayerChoice(choice)
     setGameState(GameState.RESULTS_DISPLAY)
   }
   return (
@@ -69,17 +69,17 @@ const ChoiceSelection = ({}: IChoiceSelectionProps) => {
         variants={container}
         initial="hidden"
         animate="show"
+        exit={{}}
         className="flex-1 pt-24 choice-container"
       >
         {CHOICES.map(({ id, name }) => (
-          <motion.div
+          <Choice
             key={id}
-            variants={item}
-            className="cursor-pointer circle"
-            onClick={() => handleClick(name)}
-          >
-            {name}
-          </motion.div>
+            id={id}
+            name={name}
+            syncAnimationId={`player-choice-${name}`}
+            handleClick={() => handleChoiceSelection(name)}
+          />
         ))}
       </motion.div>
     </motion.div>

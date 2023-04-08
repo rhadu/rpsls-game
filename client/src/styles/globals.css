@@ -31,8 +31,8 @@ html {
 }
 
 .circle {
-  width: 150px;
-  height: 150px;
+  width: var(--circle-size , 150px);
+  height: var(--circle-size , 150px);
   border-radius: 50%;
   border: 6px solid white;
   box-sizing: border-box;
