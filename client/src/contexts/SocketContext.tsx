@@ -3,10 +3,10 @@ import { Socket, io } from "socket.io-client"
 import { NEXT_PUBLIC_SOCKET_SERVER_URL } from "@/config/constants"
 
 export const SocketContext = React.createContext<{
-  socket: Socket | null
+  socket: Socket
   connected: boolean
 }>({
-  socket: null,
+  socket: null as unknown as Socket,
   connected: false,
 })
 
@@ -15,40 +15,66 @@ interface SocketProviderProps {
 }
 
 export function SocketProvider({ children }: SocketProviderProps) {
-  const [socket, setSocket] = React.useState<Socket | null>(null)
+  const [socket, setSocket] = React.useState<Socket>(null as unknown as Socket)
   const [connected, setConnected] = React.useState(false)
 
   React.useEffect(() => {
-    const socket = io(NEXT_PUBLIC_SOCKET_SERVER_URL)
+    const socket = io(NEXT_PUBLIC_SOCKET_SERVER_URL, {
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+    })
+
     setSocket(socket)
 
     socket.on("connect", () => {
-      console.log("User connect")
-
       setConnected(true)
     })
 
     socket.on("disconnect", () => {
-      console.log("User disconnect")
       setConnected(false)
     })
 
-    socket.emit("handshake", async (uid: string, users: string[]) => {
-      console.info("User handshake callback message received")
-      console.log(uid)
-      console.log(users)
+    /** Connection / reconnection listeners */
+    socket.io.on("reconnect", (attempt) => {
+      console.info("Reconnected on attempt: " + attempt)
+    })
+
+    socket.io.on("reconnect_attempt", (attempt) => {
+      console.info("Reconnection Attempt: " + attempt)
+    })
+
+    socket.io.on("reconnect_error", (error) => {
+      console.info("Reconnection error: " + error)
+    })
+
+    socket.io.on("reconnect_failed", () => {
+      console.info("Reconnection failure.")
+      alert(
+        "We are unable to connect you to the chat service.  Please make sure your internet connection is stable or try again later.",
+      )
     })
 
     return () => {
       socket.disconnect()
     }
   }, [])
+
+  if (!connected) {
+    return (
+      <div className="grid text-3xl font-semibold text-yellow-300 place-items-center">
+        <h2>Establishing connection to server...</h2>
+      </div>
+    )
+  }
+
   return (
     <SocketContext.Provider value={{ socket, connected }}>
       {children}
     </SocketContext.Provider>
   )
 }
+
+export const SocketProviderMemo = React.memo(SocketProvider)
 
 export const useSocket = () => {
   const context = React.useContext(SocketContext)

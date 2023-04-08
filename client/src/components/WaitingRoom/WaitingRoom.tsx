@@ -1,7 +1,6 @@
 import { motion } from "framer-motion"
 import React from "react"
 import Logo from "../Logo"
-import Spacer from "../Spacer"
 import useGameState from "@/store/game"
 import { GameState } from "@/types/game"
 
