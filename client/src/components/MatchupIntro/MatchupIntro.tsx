@@ -13,12 +13,11 @@ const MatchupIntro = ({}: IMatchupIntroProps) => {
   }))
 
   React.useEffect(() => {
-    const timeoutId2 = window.setTimeout(() => {
-      console.log("Matchup -> ChoiceSelection")
+    const timeoutId = window.setTimeout(() => {
       setGameState(GameState.CHOICE_SELECTION)
     }, 2200)
     return () => {
-      window.clearTimeout(timeoutId2)
+      window.clearTimeout(timeoutId)
     }
   }, [setGameState])
 

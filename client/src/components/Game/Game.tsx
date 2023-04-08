@@ -26,6 +26,7 @@ const Game = ({}: IGameProps) => {
   const { gameState } = useGameState()
 
   const gamingComponent = uiOptions[gameState || GameState.WAITING_PLAYERS]
+  
   return <AnimatePresence mode="wait">{gamingComponent}</AnimatePresence>
 }
 

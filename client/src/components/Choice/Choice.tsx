@@ -26,6 +26,9 @@ const Choice = ({ size, name, handleClick, syncAnimationId }: IChoiceProps) => {
       style={{ "--circle-size": size } as React.CSSProperties}
       className="cursor-pointer circle"
       onClick={handleClick}
+      transition={{
+        layout: { type: "spring", duration:0.5},
+      }}
     >
       {capitalizeFirstLetter(name)}
     </motion.div>
