@@ -50,7 +50,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
     socket.io.on("reconnect_failed", () => {
       console.info("Reconnection failure.")
       alert(
-        "We are unable to connect you to the chat service.  Please make sure your internet connection is stable or try again later.",
+        "We are unable to connect you to the RPSLS service. Please make sure your internet connection is stable or try again later.",
       )
     })
 
