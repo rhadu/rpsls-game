@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react"
 import { Socket, io } from "socket.io-client"
 import { NEXT_PUBLIC_SOCKET_SERVER_URL } from "@/config/constants"
+import EVENTS from "@/config/events"
 
 export const SocketContext = React.createContext<{
   socket: Socket
@@ -26,11 +27,11 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
     setSocket(socket)
 
-    socket.on("connect", () => {
+    socket.on(EVENTS.connection, () => {
       setConnected(true)
     })
 
-    socket.on("disconnect", () => {
+    socket.on(EVENTS.disconnect, () => {
       setConnected(false)
     })
 
