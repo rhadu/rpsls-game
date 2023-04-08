@@ -52,8 +52,8 @@ export class LobbyManager {
 
       socket.on(
         EVENTS.CLIENT.PLAYER_CHOICE,
-        ({ id, roomId }: { id: number; roomId: string }) => {
-          this.playerMakesChoice(socket, id, roomId)
+        ({ choiceId }: { choiceId: number }) => {
+          this.playerMakesChoice(socket, choiceId)
         },
       )
 
@@ -121,7 +121,8 @@ export class LobbyManager {
     return lobby.playerA !== null && lobby.playerB !== null
   }
 
-  playerMakesChoice(socket: Socket, id: number, roomId: string) {
+  playerMakesChoice(socket: Socket, choiceId: number) {
+    const roomId = this.playerRoomMap[socket.id]
     const lobby = this.lobbies[roomId]
 
     if (!lobby) {
@@ -133,9 +134,9 @@ export class LobbyManager {
 
     if (playerA && playerB) {
       if (socket.id === playerA.socketId) {
-        lobby.choices.playerA = id
+        lobby.choices.playerA = choiceId
       } else if (socket.id === playerB.socketId) {
-        lobby.choices.playerB = id
+        lobby.choices.playerB = choiceId
       }
 
       if (
@@ -147,7 +148,12 @@ export class LobbyManager {
         lobby.choices.playerB = Math.floor(Math.random() * choices.length) + 1
       }
 
-      if (lobby.choices.playerA && lobby.choices.playerB && lobby.playerA && lobby.playerB) {
+      if (
+        lobby.choices.playerA &&
+        lobby.choices.playerB &&
+        lobby.playerA &&
+        lobby.playerB
+      ) {
         const result = determineWinner(
           lobby.choices.playerA,
           lobby.choices.playerB,
@@ -172,7 +178,12 @@ export class LobbyManager {
           round: lobby.round,
         }
 
-        this.io.to(roomId).emit(EVENTS.SERVER.ROUND_RESULT, roundResult)
+        if (isSinglePlayerGame(roomId)) {
+          socket.emit(EVENTS.SERVER.ROUND_RESULT, roundResult)
+        } else {
+          this.io.to(roomId).emit(EVENTS.SERVER.ROUND_RESULT, roundResult)
+        }
+
         lobby.choices.playerA = null
         lobby.choices.playerB = null
       }

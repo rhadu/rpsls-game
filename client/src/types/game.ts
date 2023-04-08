@@ -9,3 +9,10 @@ export interface IChoice {
   id: number
   name: string
 }
+
+export type Results = {
+  winner: string
+  playerA: { uid: string; choice: number };
+  playerB: { uid: string; choice: number };
+  round: number
+}

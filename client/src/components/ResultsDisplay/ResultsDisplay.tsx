@@ -5,13 +5,14 @@ import Logo from "../Logo"
 import useGameState from "@/store/game"
 import Spacer from "@/components/Spacer"
 import { GameState } from "@/types/game"
-import { usePlayerState } from "@/store/player"
+import { useOpponentState, usePlayerState } from "@/store/player"
 
 export interface IResultsDisplayProps {}
 
 const ResultsDisplay = ({}: IResultsDisplayProps) => {
   const { setGameState } = useGameState()
   const { playerChoice } = usePlayerState()
+  const { opponentChoice } = useOpponentState()
 
   function handleNextRound() {
     setGameState(GameState.CHOICE_SELECTION)
@@ -37,7 +38,7 @@ const ResultsDisplay = ({}: IResultsDisplayProps) => {
       >
         <motion.div exit={{ y: 0, opacity: 0 }}>
           <Choice
-            id={0}
+            id={playerChoice?.id}
             size="200px"
             syncAnimationId={`player-choice-${playerChoice?.name}`}
             name={playerChoice!.name}
@@ -59,13 +60,19 @@ const ResultsDisplay = ({}: IResultsDisplayProps) => {
           </button>
         </motion.div>
 
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1, transition: { delay: 0.3 } }}
-          exit={{ y: 0, opacity: 0 }}
-        >
-          <Choice id={1} name={"lizard"} size="200px" />
-        </motion.div>
+        {opponentChoice && (
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1, transition: { delay: 0.3 } }}
+            exit={{ y: 0, opacity: 0 }}
+          >
+            <Choice
+              id={opponentChoice?.id}
+              size="200px"
+              name={opponentChoice!.name}
+            />
+          </motion.div>
+        )}
       </motion.div>
     </motion.div>
   )

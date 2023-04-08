@@ -2,15 +2,16 @@ import { Socket } from "socket.io-client"
 
 import { useSocket } from "@/contexts/SocketContext"
 import useGameState from "@/store/game"
-import { usePlayerState } from "@/store/player"
+import { useOpponentState, usePlayerState } from "@/store/player"
 import EVENTS from "@/config/events"
-import { GameState, IChoice } from "@/types/game"
+import { GameState, IChoice, Results } from "@/types/game"
 import { SINGLE_PLAYER_PREFIX } from "@/config/constants"
 
 export default class GameService {
   private _socket: Socket
   private _gameStore = useGameState
   private _playerStore = usePlayerState
+  private _opponentStore = useOpponentState
 
   constructor(webSocketContext: ReturnType<typeof useSocket>) {
     this._socket = webSocketContext.socket
@@ -36,8 +37,17 @@ export default class GameService {
     this._gameStore.getState().setGameState(GameState.MATCHUP_INTRO)
   }
 
-  private onRoundResult(status: GameState) {
-    this._gameStore.getState().setGameState(status)
+  private onRoundResult(results: Results) {
+    const { choices } = this._gameStore.getState()
+    const { id: curentPlayerId } = this._playerStore.getState()
+
+    const opponentChoiceId =
+      results.playerA.uid === curentPlayerId
+        ? results.playerB.choice
+        : results.playerA.choice
+
+    const opponentChoice = choices.find((c) => c.id === opponentChoiceId)!
+    this._opponentStore.getState().setOpponentChoice(opponentChoice)
   }
 
   private onPlayerDisconnected(status: GameState) {
@@ -60,7 +70,7 @@ export default class GameService {
     this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId })
   }
 
-  emitPlayerChoice() {
-    this._socket.emit(EVENTS.CLIENT.PLAYER_CHOICE)
+  emitPlayerChoice(choiceId: number) {
+    this._socket.emit(EVENTS.CLIENT.PLAYER_CHOICE, { choiceId })
   }
 }

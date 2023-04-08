@@ -2,7 +2,7 @@ import { Variants, motion } from "framer-motion"
 import React, { MouseEventHandler } from "react"
 
 export interface IChoiceProps {
-  id: number
+  id: number | undefined
   name: string
   syncAnimationId?: string
   size?: string

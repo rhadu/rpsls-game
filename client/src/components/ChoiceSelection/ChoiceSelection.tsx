@@ -5,6 +5,7 @@ import useGameState from "@/store/game"
 import Logo from "../Logo"
 import Choice from "../Choice"
 import { usePlayerState } from "@/store/player"
+import { useGameService } from "@/contexts/GameServiceContext"
 
 export interface IChoiceSelectionProps {}
 
@@ -24,35 +25,15 @@ const item = {
   show: { opacity: 1, y: 0, transition: { ease: [0.32, 0.23, 0.4, 0.9] } },
 }
 
-const CHOICES = [
-  {
-    id: 1,
-    name: "rock",
-  },
-  {
-    id: 2,
-    name: "paper",
-  },
-  {
-    id: 3,
-    name: "scissors",
-  },
-  {
-    id: 4,
-    name: "lizard",
-  },
-  {
-    id: 5,
-    name: "spock",
-  },
-]
 const ChoiceSelection = ({}: IChoiceSelectionProps) => {
-  const { setGameState } = useGameState()
+  const { choices, setGameState } = useGameState()
   const { setPlayerChoice } = usePlayerState()
+  const gameService = useGameService()
 
   function handleChoiceSelection(choice: IChoice) {
     setPlayerChoice(choice)
     setGameState(GameState.RESULTS_DISPLAY)
+    gameService.emitPlayerChoice(choice.id)
   }
   return (
     <motion.div exit={{}} className="flex flex-col items-center h-full">
@@ -73,7 +54,7 @@ const ChoiceSelection = ({}: IChoiceSelectionProps) => {
         animate="show"
         className="flex-1 pt-24 choice-container"
       >
-        {CHOICES.map((choice: IChoice) => (
+        {choices.map((choice: IChoice) => (
           <Choice
             key={choice.id}
             id={choice.id}
