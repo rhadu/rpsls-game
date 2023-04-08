@@ -6,15 +6,10 @@ import WaitingRoom from "../WaitingRoom"
 import MatchupIntro from "../MatchupIntro"
 import ChoiceSelection from "../ChoiceSelection"
 import ResultsDisplay from "../ResultsDisplay"
+import { GameState } from "@/types/game"
+import useGameState from "@/store/game"
 
 export interface IGameProps {}
-
-enum GameState {
-  WAITING_PLAYERS = "WAITING_PLAYERS",
-  MATCHUP_INTRO = "MATCHUP_INTRO",
-  CHOICE_SELECTION = "CHOICE_SELECTION",
-  RESULTS_DISPLAY = "RESULTS_DISPLAY",
-}
 
 const uiOptions: Record<GameState, ReactNode> = {
   [GameState.WAITING_PLAYERS]: <WaitingRoom key={GameState.WAITING_PLAYERS} />,
@@ -28,9 +23,10 @@ const uiOptions: Record<GameState, ReactNode> = {
 }
 
 const Game = ({}: IGameProps) => {
-  const agameState = GameState.WAITING_PLAYERS
-  const gamingComponent = uiOptions[agameState]
-  return <>{gamingComponent}</>
+  const { gameState } = useGameState()
+
+  const gamingComponent = uiOptions[gameState || GameState.WAITING_PLAYERS]
+  return <AnimatePresence mode="wait">{gamingComponent}</AnimatePresence>
 }
 
 export default Game
