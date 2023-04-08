@@ -4,3 +4,8 @@ export enum GameState {
   CHOICE_SELECTION = "CHOICE_SELECTION",
   RESULTS_DISPLAY = "RESULTS_DISPLAY",
 }
+
+export interface IChoice {
+  id: number
+  name: string
+}

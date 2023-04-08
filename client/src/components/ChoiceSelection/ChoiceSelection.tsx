@@ -1,9 +1,10 @@
 import React from "react"
 import { motion } from "framer-motion"
-import { GameState } from "@/types/game"
+import { GameState, IChoice } from "@/types/game"
 import useGameState from "@/store/game"
 import Logo from "../Logo"
 import Choice from "../Choice"
+import { usePlayerState } from "@/store/player"
 
 export interface IChoiceSelectionProps {}
 
@@ -46,14 +47,15 @@ const CHOICES = [
   },
 ]
 const ChoiceSelection = ({}: IChoiceSelectionProps) => {
-  const { setGameState, setPlayerChoice } = useGameState()
-  
-  function handleChoiceSelection(choice: string) {
+  const { setGameState } = useGameState()
+  const { setPlayerChoice } = usePlayerState()
+
+  function handleChoiceSelection(choice: IChoice) {
     setPlayerChoice(choice)
     setGameState(GameState.RESULTS_DISPLAY)
   }
   return (
-    <motion.div className="flex flex-col items-center h-full">
+    <motion.div exit={{}} className="flex flex-col items-center h-full">
       <motion.header className="flex gap-32 pt-10">
         <motion.div
           layoutId="playerA"
@@ -69,16 +71,15 @@ const ChoiceSelection = ({}: IChoiceSelectionProps) => {
         variants={container}
         initial="hidden"
         animate="show"
-        exit={{}}
         className="flex-1 pt-24 choice-container"
       >
-        {CHOICES.map(({ id, name }) => (
+        {CHOICES.map((choice: IChoice) => (
           <Choice
-            key={id}
-            id={id}
-            name={name}
-            syncAnimationId={`player-choice-${name}`}
-            handleClick={() => handleChoiceSelection(name)}
+            key={choice.id}
+            id={choice.id}
+            name={choice.name}
+            syncAnimationId={`player-choice-${choice.name}`}
+            handleClick={() => handleChoiceSelection(choice)}
           />
         ))}
       </motion.div>

@@ -5,11 +5,13 @@ import Logo from "../Logo"
 import useGameState from "@/store/game"
 import Spacer from "@/components/Spacer"
 import { GameState } from "@/types/game"
+import { usePlayerState } from "@/store/player"
 
 export interface IResultsDisplayProps {}
 
 const ResultsDisplay = ({}: IResultsDisplayProps) => {
-  const { choice, setGameState } = useGameState()
+  const { setGameState } = useGameState()
+  const { playerChoice } = usePlayerState()
 
   function handleNextRound() {
     setGameState(GameState.CHOICE_SELECTION)
@@ -33,12 +35,14 @@ const ResultsDisplay = ({}: IResultsDisplayProps) => {
         exit={{ opacity: 0 }}
         className="flex items-center justify-center gap-20"
       >
-        <Choice
-          id={0}
-          size="200px"
-          syncAnimationId={`player-choice-${choice}`}
-          name={choice}
-        />
+        <motion.div exit={{ y: 0, opacity: 0 }}>
+          <Choice
+            id={0}
+            size="200px"
+            syncAnimationId={`player-choice-${playerChoice?.name}`}
+            name={playerChoice!.name}
+          />
+        </motion.div>
 
         <motion.div
           initial={{ y: 20, opacity: 0 }}
@@ -58,7 +62,7 @@ const ResultsDisplay = ({}: IResultsDisplayProps) => {
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1, transition: { delay: 0.3 } }}
-          exit={{ y: 20, opacity: 0 }}
+          exit={{ y: 0, opacity: 0 }}
         >
           <Choice id={1} name={"lizard"} size="200px" />
         </motion.div>
