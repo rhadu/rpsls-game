@@ -6,10 +6,16 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import useGameState from "@/store/game"
 import { GameState } from "@/types/game"
+import { useRouter } from "next/router"
+import { useGameService } from '@/contexts/GameServiceContext'
 
 export interface IStartPageProps {}
 
 const StartPage = ({}: IStartPageProps) => {
+  const router = useRouter()
+  const gameService = useGameService()
+
+  // TODO: Move to reset method
   const { setGameState } = useGameState((state) => ({
     setGameState: state.setGameState,
   }))
@@ -17,6 +23,14 @@ const StartPage = ({}: IStartPageProps) => {
   React.useEffect(() => {
     setGameState(GameState.WAITING_PLAYERS)
   }, [setGameState])
+  //END TODO 
+  
+  function handleSinglePlayer(event: React.MouseEvent<HTMLElement>): void {
+    event.preventDefault()
+    gameService.emitJoinRoomSingleplayer()
+    router.push("/single")
+  }
+
   return (
     <motion.div className="flex flex-col items-center justify-between h-full">
       <motion.header className="py-10">
@@ -44,12 +58,13 @@ const StartPage = ({}: IStartPageProps) => {
           </p>
         </motion.div>
         <div className="flex gap-12">
-          <Link
+          <a
             href="/single"
+            onClick={handleSinglePlayer}
             className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"
           >
             VS. Sheldon
-          </Link>
+          </a>
           <Link
             href="/"
             className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"

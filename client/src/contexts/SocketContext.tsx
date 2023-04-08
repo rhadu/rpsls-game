@@ -27,11 +27,13 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
     setSocket(socket)
 
-    socket.on(EVENTS.connection, () => {
+    socket.on('connect', () => {
+      console.info("User connected")
       setConnected(true)
     })
 
     socket.on(EVENTS.disconnect, () => {
+      console.info("User disconnected")
       setConnected(false)
     })
 
@@ -59,6 +61,8 @@ export function SocketProvider({ children }: SocketProviderProps) {
       socket.disconnect()
     }
   }, [])
+
+  console.log({ connected })
 
   if (!connected) {
     return (

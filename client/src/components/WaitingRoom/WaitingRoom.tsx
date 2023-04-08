@@ -7,19 +7,6 @@ import { GameState } from "@/types/game"
 export interface IWaitingRoomProps {}
 
 const WaitingRoom = ({}: IWaitingRoomProps) => {
-  const { setGameState } = useGameState((state) => ({
-    setGameState: state.setGameState,
-  }))
-
-  React.useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      console.log("Waiting Room -> Matchup")
-      setGameState(GameState.MATCHUP_INTRO)
-    }, 1000)
-    return () => {
-      window.clearTimeout(timeoutId)
-    }
-  }, [setGameState])
   return (
     <motion.div className="flex flex-col items-center h-full">
       <motion.header className="py-10">

@@ -2,8 +2,7 @@ import useGameState from "@/store/game"
 import { GameState } from "@/types/game"
 import { motion } from "framer-motion"
 import React from "react"
-import Logo from '../Logo'
-
+import Logo from "../Logo"
 
 export interface IMatchupIntroProps {}
 
@@ -15,7 +14,7 @@ const MatchupIntro = ({}: IMatchupIntroProps) => {
   React.useEffect(() => {
     const timeoutId = window.setTimeout(() => {
       setGameState(GameState.CHOICE_SELECTION)
-    }, 2200)
+    }, 2500)
     return () => {
       window.clearTimeout(timeoutId)
     }
@@ -37,6 +36,8 @@ const MatchupIntro = ({}: IMatchupIntroProps) => {
             x: 0,
             opacity: 1,
             transition: {
+              delay: 0.3,
+              duration: 0.3,
               ease: [0.32, 0.23, 0.4, 0.9],
             },
           }}
@@ -44,7 +45,20 @@ const MatchupIntro = ({}: IMatchupIntroProps) => {
           className="rounded-full w-[200px] bg-yellow-300  h-[200px]"
         ></motion.div>
         <motion.span
+          initial={{
+            y: 20,
+            opacity: 0,
+          }}
+          animate={{
+            y: 0,
+            opacity: 1,
+            transition: {
+              delay: 0.75,
+              ease: [0.32, 0.23, 0.4, 0.9],
+            },
+          }}
           exit={{
+            y: 10,
             opacity: 0,
           }}
           className="text-3xl font-bold text-yellow-300 "
@@ -60,7 +74,8 @@ const MatchupIntro = ({}: IMatchupIntroProps) => {
             x: 0,
             opacity: 1,
             transition: {
-              delay: 0.3,
+              delay: 0.6,
+              duration: 0.3,
               ease: [0.32, 0.23, 0.4, 0.9],
             },
           }}
