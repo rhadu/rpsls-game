@@ -4,25 +4,15 @@ import Logo from "@/components/Logo/index"
 import Spacer from "@/components/Spacer"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import useGameState from "@/store/game"
-import { GameState } from "@/types/game"
 
 export interface IStartPageProps {}
 
 const StartPage = ({}: IStartPageProps) => {
-  const { setGameState } = useGameState((state) => ({
-    setGameState: state.setGameState,
-  }))
-
-  React.useEffect(() => {
-    setGameState(GameState.WAITING_PLAYERS)
-  }, [setGameState])
-  
   return (
-    <motion.div className="flex flex-col items-center justify-between h-full">
-      <motion.header className="py-10">
+    <motion.main className="flex flex-col items-center justify-between h-full">
+      <motion.div className="py-10">
         <Logo />
-      </motion.header>
+      </motion.div>
 
       <motion.div
         initial={{
@@ -59,13 +49,13 @@ const StartPage = ({}: IStartPageProps) => {
           </Link>
         </div>
       </motion.div>
-      <motion.div
+      <motion.span
         exit={{ y: 20, opacity: 0 }}
         className="py-24 text-xl text-white "
       >
         How to play?
-      </motion.div>
-    </motion.div>
+      </motion.span>
+    </motion.main>
   )
 }
 export default StartPage
