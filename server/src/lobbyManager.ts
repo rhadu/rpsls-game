@@ -1,11 +1,16 @@
-import { Server, Socket } from 'socket.io';
-import { Choice, determineWinner, Lobby, Player, Results } from './types/game';
+import { Server, Socket } from "socket.io"
+import { Choice, Lobby, Results } from "./types/game"
+import { SINGLE_PLAYER_PREFIX } from "./config/constants"
+import EVENTS from "./config/events"
+import { determineWinner } from "./utils/game"
 
 const choices: Choice[] = [
-  { id: 1, name: 'rock' },
-  { id: 2, name: 'paper' },
-  { id: 3, name: 'scissors' },
-];
+  { id: 1, name: "rock" },
+  { id: 2, name: "paper" },
+  { id: 3, name: "scissors" },
+  { id: 4, name: "lizard" },
+  { id: 5, name: "spock" },
+]
 
 const createLobby = (): Lobby => ({
   playerA: null,
@@ -13,153 +18,187 @@ const createLobby = (): Lobby => ({
   choices: { playerA: null, playerB: null },
   round: 0,
   scores: { playerA: 0, playerB: 0 },
-});
+})
 
+const isSinglePlayerGame = (roomId: string): boolean => {
+  return roomId.startsWith(SINGLE_PLAYER_PREFIX)
+}
 export class LobbyManager {
-  private lobbies: Record<string, Lobby> = {};
+  private lobbies: Record<string, Lobby> = {}
+  private playerRoomMap: Record<string, string> = {}
 
   constructor(private io: Server) {
-    io.on('connection', (socket: Socket) => {
-      console.log('User connecteds:', socket.id);
-
-      socket.on('join-room', ({ name, roomId }) => {
-        this.joinLobby(socket, name, roomId);
-      });
-
-      socket.on('player-choice', ({ id, roomId }) => {
-        this.playerMakesChoice(socket, id, roomId);
-      });
-
-      socket.on('disconnect', () => {
-        this.playerDisconnects(socket.id);
-      });
-    });
+    this.setupListeners()
   }
 
-  private emitStartGame(roomId: string) {
-    if (this.lobbies[roomId].playerA && this.lobbies[roomId].playerB) {
-      this.io.to(roomId).emit('start-game', { choices });
+  private setupListeners() {
+    this.io.on(EVENTS.connection, (socket) => {
+      console.log("User connected:", socket.id)
+
+      socket.on(
+        EVENTS.CLIENT.JOIN_ROOM,
+        ({
+          uid,
+          name,
+          roomId,
+        }: {
+          uid: string
+          name: string
+          roomId: string
+        }) => {
+          this.joinLobby(socket, uid, name, roomId)
+        },
+      )
+
+      socket.on(
+        EVENTS.CLIENT.PLAYER_CHOICE,
+        ({ id, roomId }: { id: number; roomId: string }) => {
+          this.playerMakesChoice(socket, id, roomId)
+        },
+      )
+
+      socket.on(EVENTS.disconnect, () => {
+        this.playerDisconnects(socket.id)
+      })
+    })
+  }
+
+  joinLobby(socket: Socket, uid: string, name: string, roomId: string) {
+    if (!this.lobbies[roomId]) {
+      this.lobbies[roomId] = createLobby()
+    }
+
+    this.addPlayerToLobby(socket, uid, name, roomId)
+
+    if (isSinglePlayerGame(roomId)) {
+      this.startSinglePlayerGame(socket, roomId)
+    } else if (this.areBothPlayersPresent(roomId)) {
+      this.startMultiPlayerGame(roomId)
     }
   }
 
-  private emitRoundResult(roomId: string, roundResult: Results) {
-    this.io.to(roomId).emit('round-result', roundResult);
-  }
+  private addPlayerToLobby(
+    socket: Socket,
+    uid: string,
+    name: string,
+    roomId: string,
+  ) {
+    const lobby = this.lobbies[roomId]
+    const player = { socketId: socket.id, uid, name }
 
-  joinLobby(socket: Socket, name: string, roomId: string) {
-    if (roomId.startsWith('single-player')) {
-      const computerPlayer = { socketId: 'computer', name: 'Computer' };
-      if (!this.lobbies[roomId]) {
-        this.lobbies[roomId] = createLobby();
+    if (isSinglePlayerGame(roomId)) {
+      lobby.playerA = player
+      lobby.playerB = {
+        socketId: "computer",
+        name: "Computer",
+        uid: "computer",
       }
-      this.lobbies[roomId].playerA = { socketId: socket.id, name };
-      this.lobbies[roomId].playerB = computerPlayer;
     } else {
-      if (!this.lobbies[roomId]) {
-        this.lobbies[roomId] = createLobby();
-      }
-
-      if (!this.lobbies[roomId].playerA) {
-        this.lobbies[roomId].playerA = { socketId: socket.id, name };
-        socket.join(roomId);
-      } else if (
-        !this.lobbies[roomId].playerB &&
-        this.lobbies[roomId].playerA?.socketId !== socket.id
-      ) {
-        this.lobbies[roomId].playerB = { socketId: socket.id, name };
-        socket.join(roomId);
+      if (!lobby.playerA) {
+        lobby.playerA = player
+        socket.join(roomId)
+      } else if (!lobby.playerB && lobby.playerA.socketId !== socket.id) {
+        lobby.playerB = player
+        socket.join(roomId)
       } else {
-        socket.emit('error', 'Room is full.');
-        return;
+        socket.emit(EVENTS.SERVER.ERROR, "Room is full.")
       }
     }
+    // Add or update the mapping of the player's socketId to the roomId
+    this.playerRoomMap[socket.id] = roomId
+  }
 
-    if (roomId.startsWith('single-player')) {
-      socket.emit('start-game', { choices });
-    } else {
-      this.emitStartGame(roomId);
-    }
+  private startSinglePlayerGame(socket: Socket, roomId: string) {
+    socket.emit(EVENTS.SERVER.START_GAME, { choices })
+  }
+
+  private startMultiPlayerGame(roomId: string) {
+    this.io.to(roomId).emit(EVENTS.SERVER.START_GAME, { choices })
+  }
+
+  private areBothPlayersPresent(roomId: string): boolean {
+    const lobby = this.lobbies[roomId]
+    return lobby.playerA !== null && lobby.playerB !== null
   }
 
   playerMakesChoice(socket: Socket, id: number, roomId: string) {
-    const lobby = this.lobbies[roomId];
+    const lobby = this.lobbies[roomId]
 
     if (!lobby) {
-      return;
+      return
     }
 
-    const playerA = lobby.playerA;
-    const playerB = lobby.playerB;
+    const playerA = lobby.playerA
+    const playerB = lobby.playerB
 
     if (playerA && playerB) {
       if (socket.id === playerA.socketId) {
-        lobby.choices.playerA = id;
+        lobby.choices.playerA = id
       } else if (socket.id === playerB.socketId) {
-        lobby.choices.playerB = id;
+        lobby.choices.playerB = id
       }
 
       if (
         lobby.choices.playerA &&
         !lobby.choices.playerB &&
-        playerB.socketId === 'computer'
+        playerB.socketId === "computer"
       ) {
-        lobby.choices.playerB = Math.floor(Math.random() * choices.length) + 1;
+        // Generate computer move
+        lobby.choices.playerB = Math.floor(Math.random() * choices.length) + 1
       }
 
-      if (lobby.choices.playerA && lobby.choices.playerB) {
+      if (lobby.choices.playerA && lobby.choices.playerB && lobby.playerA && lobby.playerB) {
         const result = determineWinner(
           lobby.choices.playerA,
-          lobby.choices.playerB
-        );
+          lobby.choices.playerB,
+        )
         const winnerId =
-          result === 'draw'
-            ? 'draw'
-            : result === 'playerA'
-            ? playerA.socketId
-            : playerB.socketId;
+          result === "draw"
+            ? "draw"
+            : result === "playerA"
+            ? playerA.uid
+            : playerB.uid
 
-        if (result !== 'draw') {
-          lobby.scores[result]++;
+        if (result !== "draw") {
+          lobby.scores[result]++
         }
 
-        lobby.round++;
+        lobby.round++
 
         const roundResult: Results = {
           winner: winnerId,
-          playerA: lobby.choices.playerA,
-          playerB: lobby.choices.playerB,
+          playerA: { uid: lobby.playerA.uid, choice: lobby.choices.playerA },
+          playerB: { uid: lobby.playerB.uid, choice: lobby.choices.playerB },
           round: lobby.round,
-        };
-
-        this.emitRoundResult(roomId, roundResult);
-
-        lobby.choices.playerA = null;
-        lobby.choices.playerB = null;
-
-        // Emit end-game event if the game is over
-        if (lobby.round === 3) {
-          const winner =
-            lobby.scores.playerA > lobby.scores.playerB
-              ? playerA.socketId
-              : lobby.scores.playerA < lobby.scores.playerB
-              ? playerB.socketId
-              : 'draw';
-
-          this.io.to(roomId).emit('end-game', {
-            winner,
-            scores: lobby.scores,
-          });
-          delete this.lobbies[roomId];
-        } else {
-          this.emitStartGame(roomId);
         }
-      } else {
-        socket.to(roomId).emit('opponent-choice', { id });
+
+        this.io.to(roomId).emit(EVENTS.SERVER.ROUND_RESULT, roundResult)
+        lobby.choices.playerA = null
+        lobby.choices.playerB = null
       }
     }
   }
 
   playerDisconnects(socketId: string) {
-    console.log('User disconnected:', socketId);
+    const roomId = this.playerRoomMap[socketId]
+
+    if (!roomId) {
+      console.log("User disconnected with no assigned room:", socketId)
+      return
+    }
+
+    const lobby = this.lobbies[roomId]
+    this.io.to(roomId).emit(EVENTS.SERVER.PLAYER_DISCONNECTED)
+
+    if (
+      lobby &&
+      (lobby.playerA?.socketId === socketId ||
+        lobby.playerB?.socketId === socketId)
+    ) {
+      delete this.playerRoomMap[socketId]
+      delete this.lobbies[roomId]
+    }
+
+    console.log("User disconnected:", socketId)
   }
 }
