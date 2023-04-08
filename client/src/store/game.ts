@@ -8,17 +8,13 @@ export const useGameState = create<{
   setRoundCount: (roundCount: number) => void
   gameState: GameState | undefined
   setGameState: (state: GameState) => void
-  gameStatus: string
-  setGameStatus: (status: string) => void
 }>((set) => ({
   room: "",
   setRoom: (roomId) => set({ room: roomId }),
   roundCount: 0,
   setRoundCount: (roundCount) => set({ roundCount: roundCount }),
   gameState: GameState.WAITING_PLAYERS,
-  setGameState: (state: GameState) => set({ gameState: state }),
-  gameStatus: "",
-  setGameStatus: (status) => set({ gameStatus: status }),
+  setGameState: (state: GameState) => set({ gameState: state })
 }))
 
 export default useGameState
