@@ -1,11 +1,11 @@
 import { IChoice } from "@/types/game"
+import { nanoid } from 'nanoid'
 import { create } from "zustand"
 
 export const usePlayerState = create<{
   username: string
   setUsername: (username: string) => void
   id: string
-  setId: (id: string) => void
   room: string
   setRoom: (room: string) => void
   joinedRoom: boolean
@@ -17,8 +17,7 @@ export const usePlayerState = create<{
 }>((set) => ({
   username: "",
   setUsername: (username) => set({ username }),
-  id: "",
-  setId: (id) => set({ id }),
+  id: nanoid(),
   room: "",
   setRoom: (room) => set({ room }),
   joinedRoom: false,
