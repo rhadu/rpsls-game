@@ -37,7 +37,12 @@ const ChoiceSelection = ({}: IChoiceSelectionProps) => {
     shallow,
   )
 
-  const { setPlayerChoice } = usePlayerState()
+  const { setPlayerChoice } = usePlayerState(
+    (state) => ({
+      setPlayerChoice: state.setPlayerChoice,
+    }),
+    shallow,
+  )
   const gameService = useGameService()
 
   function handleChoiceSelection(choice: IChoice) {

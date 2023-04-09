@@ -7,6 +7,7 @@ import { GameState } from "@/types/game"
 import { useGameService } from "@/contexts/GameServiceContext"
 
 import Header from "../Header"
+import { shallow } from 'zustand/shallow'
 
 export interface IStartPageProps {}
 
@@ -16,7 +17,7 @@ const StartPage = ({}: IStartPageProps) => {
   // TODO: Move to reset method
   const { setGameState } = useGameState((state) => ({
     setGameState: state.setGameState,
-  }))
+  }), shallow)
 
   React.useEffect(() => {
     setGameState(GameState.WAITING_PLAYERS)

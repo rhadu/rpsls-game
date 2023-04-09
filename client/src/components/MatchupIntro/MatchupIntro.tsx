@@ -4,13 +4,14 @@ import useGameState from "@/store/game"
 import { GameState } from "@/types/game"
 
 import Header from "../Header"
+import { shallow } from 'zustand/shallow'
 
 export interface IMatchupIntroProps {}
 
 const MatchupIntro = ({}: IMatchupIntroProps) => {
   const { setGameState } = useGameState((state) => ({
     setGameState: state.setGameState,
-  }))
+  }), shallow)
 
   React.useEffect(() => {
     const timeoutId = window.setTimeout(() => {

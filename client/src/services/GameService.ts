@@ -42,10 +42,15 @@ export default class GameService {
   private onRoundResult(results: Results) {
     const { choices } = this._gameStore.getState()
     const { opponentTag } = this._opponentStore.getState()
+    const { playerTag } = this._playerStore.getState()
+    const opponent = results[opponentTag]
+    const player = results[playerTag]
 
-    const opponentChoice = choices.find((c) => c.id === results[opponentTag].choice)!
-
-    this._opponentStore.setState({ opponentChoice })
+    this._opponentStore.setState({
+      opponentChoice: choices.find((c) => c.id === opponent.choice),
+    })
+    this._opponentStore.setState({ opponentScore: opponent.score })
+    this._playerStore.setState({ playerScore: player.score })
   }
 
   private onPlayerDisconnected(status: GameState) {
@@ -80,7 +85,5 @@ export default class GameService {
     this._socket.emit(EVENTS.CLIENT.PLAYER_CHOICE, { choiceId })
   }
 
-  resetRound() {
-
-  }
+  resetRound() {}
 }

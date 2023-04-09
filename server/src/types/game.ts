@@ -11,8 +11,8 @@ export type Player = {
 
 export type Results = {
   winner: string
-  playerA: { uid: string; choice: number };
-  playerB: { uid: string; choice: number };
+  playerA: { uid: string; choice: number; score: number };
+  playerB: { uid: string; choice: number; score: number };
   round: number
 }
 
