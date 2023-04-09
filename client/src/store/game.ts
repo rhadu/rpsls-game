@@ -17,8 +17,8 @@ export const useGameState = create<{
   choices: null as unknown as IChoice[],
   setChoices: (choices) => set({ choices }),
   roundCount: 0,
-  roundWinner: "",
   setRoundCount: (roundCount) => set({ roundCount: roundCount }),
+  roundWinner: "",
   gameState: GameState.WAITING_PLAYERS,
   setGameState: (state: GameState) => set({ gameState: state }),
 }))

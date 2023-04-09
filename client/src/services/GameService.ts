@@ -35,8 +35,8 @@ export default class GameService {
   }
 
   private onStartGame({ choices }: { choices: IChoice[] }) {
+    this.resetGameAndPlayerState()
     this._gameStore.setState({ choices })
-    this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
   }
 
   private onRoundResult(results: Results) {
@@ -86,5 +86,14 @@ export default class GameService {
     this._socket.emit(EVENTS.CLIENT.PLAYER_CHOICE, { choiceId })
   }
 
-  resetRound() {}
+  resetGameAndPlayerState() {
+    this.resetRound()
+    this._playerStore.setState({ playerScore: 0 })
+    this._opponentStore.setState({ opponentScore: 0 })
+    this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
+  }
+
+  resetRound() {
+    this._gameStore.setState({ roundWinner: "" })
+  }
 }

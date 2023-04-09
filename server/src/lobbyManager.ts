@@ -57,6 +57,8 @@ export class LobbyManager {
   }
 
   joinLobby(socket: Socket, uid: string, name: string, roomId: string) {
+    this.resetJoinedRoom(socket.id)
+
     if (!this.lobbies[roomId]) {
       this.lobbies[roomId] = createLobby()
     }
@@ -204,6 +206,20 @@ export class LobbyManager {
     const lobby = this.lobbies[roomId]
     this.io.to(roomId).emit(EVENTS.SERVER.PLAYER_DISCONNECTED)
 
+    this.resetJoinedRoom(socketId)
+
+    console.log("User disconnected:", socketId)
+  }
+
+  resetJoinedRoom(socketId: string) {
+    const roomId = this.playerRoomMap[socketId]
+
+    if (!roomId) {
+      console.log("User has no assigned room:", socketId)
+      return
+    }
+    const lobby = this.lobbies[roomId]
+
     if (
       lobby &&
       (lobby.playerA?.socketId === socketId ||
@@ -212,8 +228,6 @@ export class LobbyManager {
       delete this.playerRoomMap[socketId]
       delete this.lobbies[roomId]
     }
-
-    console.log("User disconnected:", socketId)
   }
 
   getAllLobies() {
