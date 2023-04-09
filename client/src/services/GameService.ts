@@ -79,4 +79,8 @@ export default class GameService {
   emitPlayerChoice(choiceId: number) {
     this._socket.emit(EVENTS.CLIENT.PLAYER_CHOICE, { choiceId })
   }
+
+  resetRound() {
+
+  }
 }

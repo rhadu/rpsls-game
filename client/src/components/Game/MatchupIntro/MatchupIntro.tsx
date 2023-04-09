@@ -21,12 +21,12 @@ const MatchupIntro = ({}: IMatchupIntroProps) => {
   }, [setGameState])
 
   return (
-    <motion.div className="flex flex-col items-center h-full">
+    <motion.div className="flex flex-col items-center justify-between h-full">
       <motion.header className="flex gap-32 py-10">
         <Logo width={100} />
       </motion.header>
 
-      <motion.div className="flex items-center flex-1 gap-20">
+      <motion.div className="flex items-center gap-20">
         <motion.div
           initial={{
             x: "-100%",
@@ -83,6 +83,7 @@ const MatchupIntro = ({}: IMatchupIntroProps) => {
           className="rounded-full w-[200px] bg-yellow-300  h-[200px]"
         ></motion.div>
       </motion.div>
+      <div className='h-[200px]'></div>
     </motion.div>
   )
 }

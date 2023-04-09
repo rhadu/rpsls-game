@@ -1,5 +1,6 @@
 import React from "react"
 import { motion } from "framer-motion"
+import { shallow } from "zustand/shallow"
 
 import useGameState from "@/store/game"
 import { GameState } from "@/types/game"
@@ -12,26 +13,53 @@ import Spacer from "@/components/Spacer"
 export interface IResultsDisplayProps {}
 
 const ResultsDisplay = ({}: IResultsDisplayProps) => {
-  const { setGameState } = useGameState()
-  const { playerChoice } = usePlayerState()
-  const { opponentChoice } = useOpponentState()
+  const { setGameState } = useGameState(
+    (state) => ({
+      setGameState: state.setGameState,
+    }),
+    shallow,
+  )
+  const { playerChoice } = usePlayerState(
+    (state) => ({
+      playerChoice: state.playerChoice,
+    }),
+    shallow,
+  )
+  const { opponentChoice } = useOpponentState(
+    (state) => ({
+      opponentChoice: state.opponentChoice,
+    }),
+    shallow,
+  )
 
   function handleNextRound() {
     setGameState(GameState.CHOICE_SELECTION)
   }
 
   return (
-    <motion.div className="flex flex-col items-center h-full">
-      <motion.header className="flex gap-32 pt-10">
-        <motion.div
-          layoutId="playerA"
-          className="rounded-full w-[100px] bg-yellow-300 h-[100px]"
-        ></motion.div>
+    <motion.div className="container flex flex-col items-center h-full mx-auto">
+      <motion.header className="flex gap-20 pt-10">
+        <div className="w-[200px] rounded-full bg-yellow-100 flex items-center">
+          <motion.div
+            layoutId="playerA"
+            className="rounded-full  w-[100px] bg-yellow-300 h-[100px]"
+          ></motion.div>
+          <motion.span className="flex-1 text-3xl font-semibold text-center">
+            3 / 2
+          </motion.span>
+        </div>
+
         <Logo width={100} />
-        <motion.div
-          layoutId="playerB"
-          className="rounded-full w-[100px] bg-yellow-300 h-[100px]"
-        ></motion.div>
+        <motion.div className="w-[200px] rounded-full bg-yellow-100 flex items-center">
+          <motion.span className="flex-1 text-3xl font-semibold text-center">
+            3 / 2
+          </motion.span>
+
+          <motion.div
+            layoutId="playerB"
+            className="rounded-full w-[100px] bg-yellow-300 h-[100px] justify-self-end"
+          ></motion.div>
+        </motion.div>
       </motion.header>
       <Spacer size="200px" />
       <motion.div
