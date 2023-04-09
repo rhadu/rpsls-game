@@ -1,12 +1,13 @@
 import React, { ReactNode } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 
-import WaitingRoom from "./WaitingRoom"
-import MatchupIntro from "./MatchupIntro"
-import ChoiceSelection from "./ChoiceSelection"
-import ResultsDisplay from "./ResultsDisplay"
 import { GameState } from "@/types/game"
 import useGameState from "@/store/game"
+
+import WaitingRoom from '@/components/WaitingRoom/'
+import ChoiceSelection from '@/components/ChoiceSelection'
+import MatchupIntro from '@/components/MatchupIntro'
+import ResultsDisplay from '@/components/ResultsDisplay'
 
 export interface IGameProps {}
 
