@@ -16,3 +16,5 @@ export type Results = {
   playerB: { uid: string; choice: number };
   round: number
 }
+
+export type PlayerTag = "playerA" | "playerB"

@@ -93,20 +93,27 @@ export class LobbyManager {
         name: "Computer",
         uid: "computer",
       }
+      this.emitPlayerTag(socket, "playerA")
     } else {
       if (!lobby.playerA) {
         lobby.playerA = player
         socket.join(roomId)
+        this.emitPlayerTag(socket, "playerA")
       } else if (!lobby.playerB && lobby.playerA.socketId !== socket.id) {
         lobby.playerB = player
         socket.join(roomId)
+        this.emitPlayerTag(socket, "playerB")
       } else {
         socket.emit(EVENTS.SERVER.ERROR, "Room is full.")
       }
     }
-    
+
     // Add or update the mapping of the player's socketId to the roomId
     this.playerRoomMap[socket.id] = roomId
+  }
+
+  private emitPlayerTag(socket: Socket, tag: "playerA" | "playerB") {
+    socket.emit(EVENTS.SERVER.PLAYER_TAG, { tag })
   }
 
   private startSinglePlayerGame(socket: Socket, roomId: string) {
@@ -212,5 +219,13 @@ export class LobbyManager {
     }
 
     console.log("User disconnected:", socketId)
+  }
+
+  getAllLobies() {
+    return this.lobbies
+  }
+
+  getAllPlayers() {
+    return this.playerRoomMap
   }
 }

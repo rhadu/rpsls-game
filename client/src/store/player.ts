@@ -1,5 +1,5 @@
-import { IChoice } from "@/types/game"
-import { nanoid } from 'nanoid'
+import { IChoice, PlayerTag } from "@/types/game"
+import { nanoid } from "nanoid"
 import { create } from "zustand"
 
 export const usePlayerState = create<{
@@ -7,6 +7,8 @@ export const usePlayerState = create<{
   setUsername: (username: string) => void
   id: string
   room: string
+  playerTag: PlayerTag
+  setPlayerTag: (tag: PlayerTag) => void
   setRoom: (room: string) => void
   joinedRoom: boolean
   setJoinedRoom: (joinedRoom: boolean) => void
@@ -19,6 +21,8 @@ export const usePlayerState = create<{
   setUsername: (username) => set({ username }),
   id: nanoid(),
   room: "",
+  playerTag: null as unknown as PlayerTag,
+  setPlayerTag: (tag) => set({ playerTag: tag }),
   setRoom: (room) => set({ room }),
   joinedRoom: false,
   setJoinedRoom: (joinedRoom) => set({ joinedRoom }),
@@ -34,6 +38,8 @@ export const useOpponentState = create<{
   setOpponentName: (name: string) => void
   opponentChoice: IChoice | null
   setOpponentChoice: (choice: IChoice) => void
+  opponentTag: PlayerTag
+  setOpponentTag: (tag: PlayerTag) => void
   opponentScore: number
   incrementOpponentScore: VoidFunction
 }>((set) => ({
@@ -41,6 +47,8 @@ export const useOpponentState = create<{
   setOpponentName: (name) => set({ opponentName: name }),
   opponentChoice: null,
   setOpponentChoice: (choice: IChoice) => set({ opponentChoice: choice }),
+  opponentTag: null as unknown as PlayerTag,
+  setOpponentTag: (tag) => set({ opponentTag: tag }),
   opponentScore: 0,
   incrementOpponentScore: () =>
     set((state) => ({ opponentScore: state.opponentScore + 1 })),

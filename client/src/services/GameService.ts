@@ -4,7 +4,7 @@ import { useSocket } from "@/contexts/SocketContext"
 import useGameState from "@/store/game"
 import { useOpponentState, usePlayerState } from "@/store/player"
 import EVENTS from "@/config/events"
-import { GameState, IChoice, Results } from "@/types/game"
+import { GameState, IChoice, Results, PlayerTag } from "@/types/game"
 import { SINGLE_PLAYER_PREFIX } from "@/config/constants"
 
 export default class GameService {
@@ -19,6 +19,7 @@ export default class GameService {
     this.onRoundResult = this.onRoundResult.bind(this)
     this.onPlayerDisconnected = this.onPlayerDisconnected.bind(this)
     this.onError = this.onError.bind(this)
+    this.onPlayerTag = this.onPlayerTag.bind(this)
     this.initializeSocketEvents()
   }
 
@@ -30,6 +31,7 @@ export default class GameService {
       this.onPlayerDisconnected,
     )
     this._socket.on(EVENTS.SERVER.ERROR, this.onError)
+    this._socket.on(EVENTS.SERVER.PLAYER_TAG, this.onPlayerTag)
   }
 
   private onStartGame({ choices }: { choices: IChoice[] }) {
@@ -39,25 +41,27 @@ export default class GameService {
 
   private onRoundResult(results: Results) {
     const { choices } = this._gameStore.getState()
-    const { id: curentPlayerId } = this._playerStore.getState()
+    const { opponentTag } = this._opponentStore.getState()
 
-    const opponentChoiceId =
-      results.playerA.uid === curentPlayerId
-        ? results.playerB.choice
-        : results.playerA.choice
+    const opponentChoice = choices.find((c) => c.id === results[opponentTag].choice)!
 
-    const opponentChoice = choices.find((c) => c.id === opponentChoiceId)!
     this._opponentStore.setState({ opponentChoice })
   }
 
   private onPlayerDisconnected(status: GameState) {
     //TODO handle disconnect
-    alert("player disconnected")
+    alert("opponent disconnected")
   }
 
   private onError(errorMessage: string) {
     //TODO handle onError
     alert(errorMessage)
+  }
+
+  private onPlayerTag({ tag }: { tag: PlayerTag }) {
+    const opponentTag: PlayerTag = tag === "playerA" ? "playerB" : "playerA"
+    this._playerStore.setState({ playerTag: tag })
+    this._opponentStore.setState({ opponentTag })
   }
 
   emitJoinRoom() {
@@ -69,7 +73,7 @@ export default class GameService {
     const name = "Leonard"
     const roomId = `${SINGLE_PLAYER_PREFIX}-${uid}`
 
-    this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId }, ()=>{})
+    this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId }, () => {})
   }
 
   emitPlayerChoice(choiceId: number) {

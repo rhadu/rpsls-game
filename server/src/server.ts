@@ -1,11 +1,12 @@
-import express from 'express';
-import http from 'http';
-import { Server } from 'socket.io';
-import { LobbyManager } from './lobbyManager';
+import express from "express"
+import http from "http"
+import { Server } from "socket.io"
+import { LobbyManager } from "./lobbyManager"
 
-const app = express();
-const server = http.createServer(app);
+const app = express()
+const server = http.createServer(app)
 
+/** Start Socket Server */
 const io = new Server(server, {
   serveClient: false,
   pingInterval: 10000,
@@ -16,52 +17,72 @@ const io = new Server(server, {
   },
 })
 
-const PORT = process.env.PORT || 9000;
+const PORT = process.env.PORT || 9000
 
-new LobbyManager(io);
+/** Initiate Game Service */
+const lobbyManager = new LobbyManager(io)
 
 /** Log the request */
 app.use((req, res, next) => {
-  console.info(`METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
+  console.info(
+    `METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`,
+  )
 
-  res.on('finish', () => {
-      console.info(`METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
-  });
+  res.on("finish", () => {
+    console.info(
+      `METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`,
+    )
+  })
 
-  next();
-});
+  next()
+})
 
 /** Parse the body of the request */
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
 /** Rules of our API */
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header("Access-Control-Allow-Origin", "*")
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+  )
 
-  if (req.method == 'OPTIONS') {
-      res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-      return res.status(200).json({});
+  if (req.method == "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET")
+    return res.status(200).json({})
   }
 
-  next();
-});
+  next()
+})
 
 /** Healthcheck */
-app.get('/ping', (req, res, next) => {
-  return res.status(200).json({ hello: 'world!' });
-});
+app.get("/ping", (req, res, next) => {
+  return res.status(200).json({ hello: "world!" })
+})
+
+/** Check Lobbies */
+app.get("/lobbies", (req, res, next) => {
+  const lobies = lobbyManager.getAllLobies()
+  return res.status(200).json({ lobies })
+})
+
+/** Check Players per Room */
+app.get("/players", (req, res, next) => {
+  const players = lobbyManager.getAllPlayers()
+  return res.status(200).json({ players })
+})
 
 /** Error handling */
 app.use((req, res, next) => {
-  const error = new Error('Not found');
+  const error = new Error("Not found")
 
   res.status(404).json({
-      message: error.message
-  });
-});
+    message: error.message,
+  })
+})
 
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+  console.log(`Server is running on port ${PORT}`)
+})
