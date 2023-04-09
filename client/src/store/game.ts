@@ -8,7 +8,7 @@ export const useGameState = create<{
   setChoices: (choices: IChoice[]) => void
   roundCount: number
   setRoundCount: (roundCount: number) => void
-  gameState: GameState | undefined
+  gameState: GameState
   setGameState: (state: GameState) => void
 }>((set) => ({
   room: "",

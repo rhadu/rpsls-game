@@ -1,8 +1,8 @@
+import React from "react"
+import { motion } from "framer-motion"
 import useGameState from "@/store/game"
 import { GameState } from "@/types/game"
-import { motion } from "framer-motion"
-import React from "react"
-import Logo from "../Logo"
+import Logo from "@/components/Logo"
 
 export interface IMatchupIntroProps {}
 

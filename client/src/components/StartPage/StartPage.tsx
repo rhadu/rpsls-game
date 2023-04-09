@@ -1,13 +1,13 @@
 import React from "react"
-import Layout from "@/components/Layout"
-import Logo from "@/components/Logo/index"
-import Spacer from "@/components/Spacer"
 import Link from "next/link"
 import { motion } from "framer-motion"
+
 import useGameState from "@/store/game"
 import { GameState } from "@/types/game"
 import { useRouter } from "next/router"
 import { useGameService } from '@/contexts/GameServiceContext'
+
+import Logo from "@/components/Logo/index"
 
 export interface IStartPageProps {}
 
@@ -58,13 +58,13 @@ const StartPage = ({}: IStartPageProps) => {
           </p>
         </motion.div>
         <div className="flex gap-12">
-          <a
+          <Link
             href="/single"
             onClick={handleSinglePlayer}
             className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"
           >
             VS. Sheldon
-          </a>
+          </Link>
           <Link
             href="/"
             className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"

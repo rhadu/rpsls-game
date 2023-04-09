@@ -1,11 +1,10 @@
-import { AnimatePresence, motion } from "framer-motion"
 import React, { ReactNode } from "react"
-import Logo from "../Logo"
-import Spacer from "../Spacer"
-import WaitingRoom from "../WaitingRoom"
-import MatchupIntro from "../MatchupIntro"
-import ChoiceSelection from "../ChoiceSelection"
-import ResultsDisplay from "../ResultsDisplay"
+import { AnimatePresence, motion } from "framer-motion"
+
+import WaitingRoom from "./WaitingRoom"
+import MatchupIntro from "./MatchupIntro"
+import ChoiceSelection from "./ChoiceSelection"
+import ResultsDisplay from "./ResultsDisplay"
 import { GameState } from "@/types/game"
 import useGameState from "@/store/game"
 
@@ -25,9 +24,9 @@ const uiOptions: Record<GameState, ReactNode> = {
 const Game = ({}: IGameProps) => {
   const { gameState } = useGameState()
 
-  const gamingComponent = uiOptions[gameState || GameState.WAITING_PLAYERS]
+  const gamingStateComponent = uiOptions[gameState]
   
-  return <AnimatePresence mode="wait">{gamingComponent}</AnimatePresence>
+  return <AnimatePresence mode="wait">{gamingStateComponent}</AnimatePresence>
 }
 
 export default Game

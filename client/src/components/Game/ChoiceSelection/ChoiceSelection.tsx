@@ -1,9 +1,12 @@
 import React from "react"
 import { motion } from "framer-motion"
+import { shallow } from 'zustand/shallow'
+
+import Logo from "@/components/Logo"
+import Choice from "@/components/Choice"
+
 import { GameState, IChoice } from "@/types/game"
 import useGameState from "@/store/game"
-import Logo from "../Logo"
-import Choice from "../Choice"
 import { usePlayerState } from "@/store/player"
 import { useGameService } from "@/contexts/GameServiceContext"
 
@@ -26,7 +29,11 @@ const item = {
 }
 
 const ChoiceSelection = ({}: IChoiceSelectionProps) => {
-  const { choices, setGameState } = useGameState()
+  const { choices, setGameState } = useGameState((state) => ({
+    choices: state.choices,
+    setGameState: state.setGameState,
+  }), shallow)
+  
   const { setPlayerChoice } = usePlayerState()
   const gameService = useGameService()
 

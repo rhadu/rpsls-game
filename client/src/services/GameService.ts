@@ -33,8 +33,8 @@ export default class GameService {
   }
 
   private onStartGame({ choices }: { choices: IChoice[] }) {
-    this._gameStore.getState().setChoices(choices)
-    this._gameStore.getState().setGameState(GameState.MATCHUP_INTRO)
+    this._gameStore.setState({ choices })
+    this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
   }
 
   private onRoundResult(results: Results) {
@@ -47,15 +47,17 @@ export default class GameService {
         : results.playerA.choice
 
     const opponentChoice = choices.find((c) => c.id === opponentChoiceId)!
-    this._opponentStore.getState().setOpponentChoice(opponentChoice)
+    this._opponentStore.setState({ opponentChoice })
   }
 
   private onPlayerDisconnected(status: GameState) {
-    this._gameStore.getState().setGameState(status)
+    //TODO handle disconnect
+    alert("player disconnected")
   }
 
-  private onError(status: GameState) {
-    this._gameStore.getState().setGameState(status)
+  private onError(errorMessage: string) {
+    //TODO handle onError
+    alert(errorMessage)
   }
 
   emitJoinRoom() {
@@ -67,7 +69,7 @@ export default class GameService {
     const name = "Leonard"
     const roomId = `${SINGLE_PLAYER_PREFIX}-${uid}`
 
-    this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId })
+    this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId }, ()=>{})
   }
 
   emitPlayerChoice(choiceId: number) {

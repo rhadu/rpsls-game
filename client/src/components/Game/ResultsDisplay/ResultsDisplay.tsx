@@ -1,11 +1,13 @@
-import { motion } from "framer-motion"
 import React from "react"
-import Choice from "../Choice"
-import Logo from "../Logo"
+import { motion } from "framer-motion"
+
 import useGameState from "@/store/game"
-import Spacer from "@/components/Spacer"
 import { GameState } from "@/types/game"
 import { useOpponentState, usePlayerState } from "@/store/player"
+
+import Choice from "@/components/Choice"
+import Logo from "@/components/Logo"
+import Spacer from "@/components/Spacer"
 
 export interface IResultsDisplayProps {}
 

@@ -104,6 +104,7 @@ export class LobbyManager {
         socket.emit(EVENTS.SERVER.ERROR, "Room is full.")
       }
     }
+    
     // Add or update the mapping of the player's socketId to the roomId
     this.playerRoomMap[socket.id] = roomId
   }
