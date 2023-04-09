@@ -4,15 +4,13 @@ import { motion } from "framer-motion"
 
 import useGameState from "@/store/game"
 import { GameState } from "@/types/game"
-import { useRouter } from "next/router"
-import { useGameService } from '@/contexts/GameServiceContext'
+import { useGameService } from "@/contexts/GameServiceContext"
 
-import Logo from "@/components/Logo/index"
+import Header from "../Header"
 
 export interface IStartPageProps {}
 
 const StartPage = ({}: IStartPageProps) => {
-  const router = useRouter()
   const gameService = useGameService()
 
   // TODO: Move to reset method
@@ -23,19 +21,16 @@ const StartPage = ({}: IStartPageProps) => {
   React.useEffect(() => {
     setGameState(GameState.WAITING_PLAYERS)
   }, [setGameState])
-  //END TODO 
-  
+  //END TODO
+
   function handleSinglePlayer(event: React.MouseEvent<HTMLElement>): void {
-    event.preventDefault()
+    // event.preventDefault()
     gameService.emitJoinRoomSingleplayer()
-    router.push("/single")
   }
 
   return (
     <motion.div className="flex flex-col items-center justify-between h-full">
-      <motion.header className="py-10">
-        <Logo />
-      </motion.header>
+      <Header />
 
       <motion.div
         initial={{
@@ -44,7 +39,7 @@ const StartPage = ({}: IStartPageProps) => {
         }}
         animate={{
           y: 0,
-          opacity: 1,
+          opacity: 1
         }}
         exit={{
           y: 20,

@@ -1,15 +1,14 @@
 import React from "react"
 import { motion } from "framer-motion"
-import Logo from "@/components/Logo"
+
+import Header from "../Header"
 
 export interface IWaitingRoomProps {}
 
 const WaitingRoom = ({}: IWaitingRoomProps) => {
   return (
     <motion.div className="flex flex-col items-center h-full">
-      <motion.header className="py-10">
-        <Logo width={100} />
-      </motion.header>
+      <Header />
 
       <motion.div
         initial={{
