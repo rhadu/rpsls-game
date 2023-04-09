@@ -13,15 +13,17 @@ import Header from "../Header"
 export interface IResultsDisplayProps {}
 
 const ResultsDisplay = ({}: IResultsDisplayProps) => {
-  const { setGameState } = useGameState(
+  const { setGameState, roundWinner } = useGameState(
     (state) => ({
       setGameState: state.setGameState,
+      roundWinner: state.roundWinner,
     }),
     shallow,
   )
-  const { playerChoice } = usePlayerState(
+  const { playerChoice, playerTag } = usePlayerState(
     (state) => ({
       playerChoice: state.playerChoice,
+      playerTag: state.playerTag,
     }),
     shallow,
   )
@@ -32,7 +34,15 @@ const ResultsDisplay = ({}: IResultsDisplayProps) => {
     shallow,
   )
 
+  const roundWinnerMessage =
+    roundWinner === "draw"
+      ? "It's a draw"
+      : roundWinner === playerTag
+      ? "You won!"
+      : "You lost..."
+
   function handleNextRound() {
+    //TODO Move to GameService
     setGameState(GameState.CHOICE_SELECTION)
   }
 
@@ -59,7 +69,9 @@ const ResultsDisplay = ({}: IResultsDisplayProps) => {
           exit={{ y: 20, opacity: 0 }}
           className="flex flex-col items-center gap-10"
         >
-          <div className="text-3xl font-bold text-yellow-300">You Win</div>
+          <div className="text-3xl font-bold text-yellow-300">
+            {roundWinnerMessage}
+          </div>
           <button
             onClick={handleNextRound}
             className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"

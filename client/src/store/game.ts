@@ -1,4 +1,4 @@
-import { GameState, IChoice } from "@/types/game"
+import { GameState, IChoice, PlayerTag } from "@/types/game"
 import { create } from "zustand"
 
 export const useGameState = create<{
@@ -8,6 +8,7 @@ export const useGameState = create<{
   setChoices: (choices: IChoice[]) => void
   roundCount: number
   setRoundCount: (roundCount: number) => void
+  roundWinner: PlayerTag | "draw" | ""
   gameState: GameState
   setGameState: (state: GameState) => void
 }>((set) => ({
@@ -16,6 +17,7 @@ export const useGameState = create<{
   choices: null as unknown as IChoice[],
   setChoices: (choices) => set({ choices }),
   roundCount: 0,
+  roundWinner: "",
   setRoundCount: (roundCount) => set({ roundCount: roundCount }),
   gameState: GameState.WAITING_PLAYERS,
   setGameState: (state: GameState) => set({ gameState: state }),

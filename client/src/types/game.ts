@@ -11,9 +11,9 @@ export interface IChoice {
 }
 
 export type Results = {
-  winner: string
-  playerA: { uid: string; choice: number; score: number };
-  playerB: { uid: string; choice: number; score: number };
+  winner: PlayerTag | "draw"
+  playerA: { uid: string; choice: number; score: number }
+  playerB: { uid: string; choice: number; score: number }
   round: number
 }
 

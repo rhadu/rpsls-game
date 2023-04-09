@@ -3,7 +3,7 @@ import { Choice, Lobby, Results } from "./types/game"
 import { SINGLE_PLAYER_PREFIX } from "./config/constants"
 import EVENTS from "./config/events"
 import { determineWinner } from "./utils/game"
-import { choices } from './config/data'
+import { choices } from "./config/data"
 
 const createLobby = (): Lobby => ({
   playerA: null,
@@ -155,27 +155,29 @@ export class LobbyManager {
         lobby.playerA &&
         lobby.playerB
       ) {
-        const result = determineWinner(
+        const winner = determineWinner(
           lobby.choices.playerA,
           lobby.choices.playerB,
         )
-        const winnerId =
-          result === "draw"
-            ? "draw"
-            : result === "playerA"
-            ? playerA.uid
-            : playerB.uid
 
-        if (result !== "draw") {
-          lobby.scores[result]++
+        if (winner !== "draw") {
+          lobby.scores[winner]++
         }
 
         lobby.round++
 
         const roundResult: Results = {
-          winner: winnerId,
-          playerA: { uid: lobby.playerA.uid, choice: lobby.choices.playerA, score: lobby.scores.playerA },
-          playerB: { uid: lobby.playerB.uid, choice: lobby.choices.playerB, score: lobby.scores.playerB },
+          winner: winner,
+          playerA: {
+            uid: lobby.playerA.uid,
+            choice: lobby.choices.playerA,
+            score: lobby.scores.playerA,
+          },
+          playerB: {
+            uid: lobby.playerB.uid,
+            choice: lobby.choices.playerB,
+            score: lobby.scores.playerB,
+          },
           round: lobby.round,
         }
 

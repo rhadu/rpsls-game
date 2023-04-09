@@ -51,6 +51,7 @@ export default class GameService {
     })
     this._opponentStore.setState({ opponentScore: opponent.score })
     this._playerStore.setState({ playerScore: player.score })
+    this._gameStore.setState({ roundWinner: results.winner })
   }
 
   private onPlayerDisconnected(status: GameState) {
