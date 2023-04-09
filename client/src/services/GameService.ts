@@ -36,6 +36,7 @@ export default class GameService {
 
   private onStartGame({ choices }: { choices: IChoice[] }) {
     this.resetGameAndPlayerState()
+    this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
     this._gameStore.setState({ choices })
   }
 
@@ -71,7 +72,12 @@ export default class GameService {
   }
 
   emitJoinRoom() {
-    this._socket.emit(EVENTS.CLIENT.JOIN_ROOM)
+    const uid = this._playerStore.getState().id
+    const name = "Howard"
+    const roomId = `multi-1234`
+
+    this._gameStore.setState({ gameState: GameState.WAITING_PLAYERS })
+    this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId })
   }
 
   emitJoinRoomSingleplayer() {
@@ -79,6 +85,7 @@ export default class GameService {
     const name = "Leonard"
     const roomId = `${SINGLE_PLAYER_PREFIX}-${uid}`
 
+    this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
     this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId }, () => {})
   }
 
@@ -86,14 +93,19 @@ export default class GameService {
     this._socket.emit(EVENTS.CLIENT.PLAYER_CHOICE, { choiceId })
   }
 
+  goToNextRound() {
+    this.resetRound()
+    this._gameStore.setState({ gameState: GameState.CHOICE_SELECTION })
+  }
+
   resetGameAndPlayerState() {
     this.resetRound()
     this._playerStore.setState({ playerScore: 0 })
     this._opponentStore.setState({ opponentScore: 0 })
-    this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
   }
 
   resetRound() {
     this._gameStore.setState({ roundWinner: "" })
+    this._opponentStore.setState({ opponentChoice: null })
   }
 }

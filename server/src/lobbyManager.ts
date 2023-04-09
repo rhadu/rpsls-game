@@ -152,8 +152,8 @@ export class LobbyManager {
       }
 
       if (
-        lobby.choices.playerA &&
-        lobby.choices.playerB &&
+        lobby.choices.playerA !== null &&
+        lobby.choices.playerB !== null &&
         lobby.playerA &&
         lobby.playerB
       ) {

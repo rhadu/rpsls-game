@@ -2,31 +2,19 @@ import React from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 
-import useGameState from "@/store/game"
-import { GameState } from "@/types/game"
 import { useGameService } from "@/contexts/GameServiceContext"
 
 import Header from "../Header"
-import { shallow } from 'zustand/shallow'
+
 
 export interface IStartPageProps {}
 
 const StartPage = ({}: IStartPageProps) => {
   const gameService = useGameService()
 
-  // TODO: Move to reset method
-  const { setGameState } = useGameState((state) => ({
-    setGameState: state.setGameState,
-  }), shallow)
-
-  React.useEffect(() => {
-    setGameState(GameState.WAITING_PLAYERS)
-  }, [setGameState])
-  //END TODO
-
-  function handleSinglePlayer(event: React.MouseEvent<HTMLElement>): void {
-    // event.preventDefault()
-    gameService.emitJoinRoomSingleplayer()
+  function handleGameModeSelection(mode: "single" | "multi"): void {
+    if (mode === "single") gameService.emitJoinRoomSingleplayer()
+    else gameService.emitJoinRoom()
   }
 
   return (
@@ -40,7 +28,7 @@ const StartPage = ({}: IStartPageProps) => {
         }}
         animate={{
           y: 0,
-          opacity: 1
+          opacity: 1,
         }}
         exit={{
           y: 20,
@@ -56,13 +44,14 @@ const StartPage = ({}: IStartPageProps) => {
         <div className="flex gap-12">
           <Link
             href="/single"
-            onClick={handleSinglePlayer}
+            onClick={() => handleGameModeSelection("single")}
             className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"
           >
             VS. Sheldon
           </Link>
           <Link
-            href="/"
+            href="/single"
+            onClick={() => handleGameModeSelection("multi")}
             className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"
           >
             VS. Friend or Foe
