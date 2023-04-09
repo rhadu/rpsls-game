@@ -12,6 +12,9 @@
   "scripts": {
     "build:client": "cd client && yarn build",
     "build:server": "cd server && yarn build",
+    "install:client": "cd client && yarn",
+    "install:server": "cd server && yarn",
+    "postinstall": "yarn install:client && yarn install:server",
     "start:dev": "concurrently --kill-others \"yarn start:dev:server\" \"yarn start:dev:client\"",
     "start:dev:client": "cd client && yarn start:dev",
     "start:dev:server": "cd server && yarn start:dev",
