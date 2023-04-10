@@ -109,7 +109,7 @@ export class LobbyManager {
       lobby.playerA = player
       lobby.playerB = {
         socketId: "computer",
-        name: "Computer",
+        name: "Sheldon",
         uid: "computer",
         character: "Sheldon",
       }

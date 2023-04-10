@@ -3,8 +3,9 @@ import { motion } from "framer-motion"
 import Logo from "../Logo"
 import { useOpponentState, usePlayerState } from "@/store/player"
 import { shallow } from "zustand/shallow"
-import Image  from "next/image"
+import Image from "next/image"
 import sheldonUrl from "public/avatars/sheldon.png"
+import Avatar from "../Avatar"
 
 export interface IHeaderProps {
   showHeadshot?: boolean
@@ -31,7 +32,9 @@ const Header = ({ showHeadshot }: IHeaderProps) => {
           <motion.div
             layoutId="playerA"
             className="rounded-full  w-[100px] bg-yellow-300 h-[100px]"
-          ></motion.div>
+          >
+            <Avatar size="small" player="current" />
+          </motion.div>
           <motion.span className="flex-1 text-3xl font-semibold text-center">
             {playerScore} / 3
           </motion.span>
@@ -49,11 +52,7 @@ const Header = ({ showHeadshot }: IHeaderProps) => {
             layoutId="playerB"
             className="rounded-full w-[100px] bg-yellow-300 h-[100px] justify-self-end"
           >
-            <Image
-              src={sheldonUrl}
-              className="mx-auto w-[100px] h-[100px] border-4 border-yellow-300 rounded-full"
-              alt="Avatar"
-            />
+            <Avatar size="small" player="opponent" />
           </motion.div>
         </motion.div>
       )}

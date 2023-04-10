@@ -6,35 +6,10 @@ import Spacer from "../Spacer/index"
 import { usePlayerState } from "@/store/player"
 import clsx from "clsx"
 import { useGameService } from "@/contexts/GameServiceContext"
+import { CHARACTERS } from "@/config/characters"
+import Image from "next/image"
 
 export interface ICharacterSelectorProps {}
-
-const characters = [
-  {
-    name: "Leonard",
-    url: "",
-  },
-  {
-    name: "Penny",
-    url: "",
-  },
-  {
-    name: "Rajesh",
-    url: "",
-  },
-  {
-    name: "Bernadette",
-    url: "",
-  },
-  {
-    name: "Howard",
-    url: "",
-  },
-  {
-    name: "Amy",
-    url: "",
-  },
-]
 
 const CharacterSelector = ({}: ICharacterSelectorProps) => {
   const gameService = useGameService()
@@ -73,7 +48,7 @@ const CharacterSelector = ({}: ICharacterSelectorProps) => {
           Select a character
         </motion.p>
         <div className="flex flex-wrap justify-center gap-12 w-[500px]">
-          {characters.map(({ name, url }) => (
+          {CHARACTERS.map(({ name, url }) => (
             <div
               key={name}
               className="flex flex-col items-center gap-2 cursor-pointer"
@@ -81,11 +56,17 @@ const CharacterSelector = ({}: ICharacterSelectorProps) => {
             >
               <div
                 className={clsx(
-                  "w-24 h-24 text-white border-4 border-yellow-300 rounded-full ",
+                  "w-24 h-24 rounded-full ",
                   character === name &&
                     "outline-2 outline outline-offset-4 outline-yellow-100",
                 )}
-              ></div>
+              >
+                <Image
+                  src={url}
+                  className="w-24 h-24 border-4 border-yellow-300 border-solid rounded-full"
+                  alt="Avatar"
+                />
+              </div>
               <span className="text-white">{name}</span>
             </div>
           ))}

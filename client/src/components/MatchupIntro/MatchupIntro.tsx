@@ -1,35 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react"
 import { motion } from "framer-motion"
+import { shallow } from "zustand/shallow"
+
 import useGameState from "@/store/game"
 import { GameState } from "@/types/game"
 
 import Header from "../Header"
-import { shallow } from "zustand/shallow"
-import { useOpponentState, usePlayerState } from "@/store/player"
-import sheldonUrl from "public/avatars/sheldon.png"
-import Image from 'next/image'
+import Avatar from "../Avatar"
 
 export interface IMatchupIntroProps {}
 
 const MatchupIntro = ({}: IMatchupIntroProps) => {
-  const { setGameState } = useGameState(
+  const {  setGameState } = useGameState(
     (state) => ({
       setGameState: state.setGameState,
-    }),
-    shallow,
-  )
-
-  const { playerCharacter } = usePlayerState(
-    (state) => ({
-      playerCharacter: state.character,
-    }),
-    shallow,
-  )
-
-  const { opponentCharacter } = useOpponentState(
-    (state) => ({
-      opponentCharacter: state.opponentCharacter,
+      gameType: state.gameType,
     }),
     shallow,
   )
@@ -63,11 +49,9 @@ const MatchupIntro = ({}: IMatchupIntroProps) => {
             },
           }}
           layoutId="playerA"
-          className="rounded-full w-[200px] bg-yellow-300  h-[200px]"
+          className="rounded-full w-[200px] h-[200px]"
         >
-          <motion.span className="text-3xl text-white ">
-            {playerCharacter}
-          </motion.span>
+          <Avatar size="large" player="current" />
         </motion.div>
         <motion.span
           initial={{
@@ -105,13 +89,9 @@ const MatchupIntro = ({}: IMatchupIntroProps) => {
             },
           }}
           layoutId="playerB"
-          className="rounded-full w-[200px] bg-yellow-300  h-[200px]"
+          className="rounded-full w-[200px] h-[200px]"
         >
-          <Image
-            src={sheldonUrl}
-            className="mx-auto w-[200px] h-[200px] rounded-full border-4 border-yellow-300"
-            alt="Avatar"
-          />
+          <Avatar size="large" player="opponent" />
         </motion.div>
       </motion.div>
       <div className="h-[200px]"></div>
