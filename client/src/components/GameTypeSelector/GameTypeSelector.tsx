@@ -1,26 +1,27 @@
-import React from "react"
-import Link from "next/link"
 import { motion } from "framer-motion"
+import React from "react"
+import Spacer from "../Spacer"
+import useGameState from "@/store/game"
+import { shallow } from "zustand/shallow"
+import { GameType } from "@/types/game"
 
-import { useGameService } from "@/contexts/GameServiceContext"
+export interface IGameTypeSelectorProps {}
 
-import Header from "../Header"
+const GameTypeSelector = ({}: IGameTypeSelectorProps) => {
+  const { setGameType } = useGameState(
+    (state) => ({
+      setGameType: state.setGameType,
+    }),
+    shallow,
+  )
 
-
-export interface IStartPageProps {}
-
-const StartPage = ({}: IStartPageProps) => {
-  const gameService = useGameService()
-
-  function handleGameModeSelection(mode: "single" | "multi"): void {
-    if (mode === "single") gameService.emitJoinRoomSingleplayer()
-    else gameService.emitJoinRoom()
+  function handleGameTypeSelection(gameType: GameType) {
+    setGameType(gameType)
   }
 
   return (
-    <motion.div className="flex flex-col items-center justify-between h-full">
-      <Header />
-
+    <>
+      <Spacer size="200px" />
       <motion.div
         initial={{
           y: 20,
@@ -43,26 +44,21 @@ const StartPage = ({}: IStartPageProps) => {
         </motion.div>
         <div className="flex gap-12">
           <button
-            onClick={() => handleGameModeSelection("single")}
+            onClick={() => handleGameTypeSelection("single")}
             className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"
           >
             VS. Sheldon
           </button>
           <button
-            onClick={() => handleGameModeSelection("multi")}
+            onClick={() => handleGameTypeSelection("multi")}
             className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"
           >
             VS. Friend or Foe
           </button>
         </div>
       </motion.div>
-      <motion.div
-        exit={{ y: 20, opacity: 0 }}
-        className="py-24 text-xl text-white "
-      >
-        How to play?
-      </motion.div>
-    </motion.div>
+    </>
   )
 }
-export default StartPage
+
+export default GameTypeSelector

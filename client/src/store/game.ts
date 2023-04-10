@@ -1,4 +1,4 @@
-import { GameState, IChoice, PlayerTag } from "@/types/game"
+import { GameState, GameType, IChoice, PlayerTag } from "@/types/game"
 import { create } from "zustand"
 
 export const useGameState = create<{
@@ -13,6 +13,8 @@ export const useGameState = create<{
   setGameState: (state: GameState) => void
   gameStarted: boolean
   setGameStarted: (flag: boolean) => void
+  gameType: GameType | undefined
+  setGameType: (gameType: GameType | undefined) => void
 }>((set) => ({
   room: "",
   setRoom: (roomId) => set({ room: roomId }),
@@ -25,6 +27,8 @@ export const useGameState = create<{
   setGameState: (state: GameState) => set({ gameState: state }),
   gameStarted: false,
   setGameStarted: (flag) => set({ gameStarted: flag }),
+  gameType: undefined,
+  setGameType: (gameType) => set({ gameType }),
 }))
 
 export default useGameState

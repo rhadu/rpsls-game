@@ -18,3 +18,5 @@ export type Results = {
 }
 
 export type PlayerTag = "playerA" | "playerB"
+
+export type GameType = "single" | "multi"

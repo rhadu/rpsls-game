@@ -1,6 +1,6 @@
 import Game from "@/components/Game"
 import Layout from "@/components/Layout"
-import StartPage from "@/components/StartPage"
+import GameSetup from "@/components/GameSetup"
 import useGameState from "@/store/game"
 import { AnimatePresence } from "framer-motion"
 import { shallow } from "zustand/shallow"
@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <Layout>
       <AnimatePresence mode="wait">
-        {!gameStarted ? <StartPage key='startPage' /> : <Game key='gamePage'/>}
+        {!gameStarted ? <GameSetup key='gameSetup' /> : <Game key='game'/>}
       </AnimatePresence>
     </Layout>
   )

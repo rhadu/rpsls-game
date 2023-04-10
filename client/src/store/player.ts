@@ -5,6 +5,8 @@ import { create } from "zustand"
 export const usePlayerState = create<{
   username: string
   setUsername: (username: string) => void
+  character: string
+  setCharacter: (character: string) => void
   id: string
   room: string
   playerTag: PlayerTag
@@ -19,6 +21,8 @@ export const usePlayerState = create<{
 }>((set) => ({
   username: "",
   setUsername: (username) => set({ username }),
+  character: "",
+  setCharacter:(character) => set({ character }),
   id: nanoid(),
   room: "",
   playerTag: null as unknown as PlayerTag,

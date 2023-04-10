@@ -1,4 +1,5 @@
 import useGameState from "@/store/game"
+import { usePlayerState } from "@/store/player"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { shallow } from "zustand/shallow"
@@ -9,14 +10,31 @@ export interface ILogoProps {
 
 function Logo({ width = 100 }: ILogoProps) {
   //TODO call GameService to reset game
-  const { setGameStarted } = useGameState(
+  const { setGameStarted, setGameType } = useGameState(
     (state) => ({
       setGameStarted: state.setGameStarted,
+      setGameType: state.setGameType,
     }),
     shallow,
   )
+
+  const { setCharacter } = usePlayerState(
+    (state) => ({
+      setCharacter: state.setCharacter,
+    }),
+    shallow,
+  )
+
+  function backToGameSelector() {
+    setGameStarted(false)
+    setGameType(undefined)
+    setCharacter('')
+  }
+
   return (
-    <button onClick={() => setGameStarted(false)}>
+    <button
+      onClick={backToGameSelector}
+    >
       <motion.svg
         layoutId="logo"
         xmlns="http://www.w3.org/2000/svg"
