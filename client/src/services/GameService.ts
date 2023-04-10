@@ -59,9 +59,8 @@ export default class GameService {
     })
 
     this._gameStore.setState({ choices })
-    window.setTimeout(() => {
-      this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
-    }, 1000)
+
+    this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
   }
 
   private onRoundResult(results: Results) {
@@ -102,19 +101,21 @@ export default class GameService {
   // rename to Player_Joined
   private onRoomJoined({
     tag,
-    startGame,
+    showWaitingRoom = false,
   }: {
     tag: PlayerTag
-    startGame: boolean
+    showWaitingRoom: boolean
   }) {
-    console.log(`PLAYER JOINED -> ${tag}`)
+    console.log(`PLAYER JOINED -> ${tag} showWaiting -> ${showWaitingRoom}`)
     this.resetGameAndPlayerState()
 
     const opponentTag: PlayerTag = tag === "playerA" ? "playerB" : "playerA"
     this._playerStore.setState({ playerTag: tag })
     this._opponentStore.setState({ opponentTag })
     this._gameStore.setState({ gameStarted: true })
-    this._gameStore.setState({ gameState: GameState.WAITING_PLAYERS })
+    if (showWaitingRoom) {
+      this._gameStore.setState({ gameState: GameState.WAITING_PLAYERS })
+    }
   }
 
   playAgain() {

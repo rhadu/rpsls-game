@@ -4,7 +4,7 @@ import Image from "next/image"
 import useGameState from "@/store/game"
 import { useOpponentState, usePlayerState } from "@/store/player"
 import { shallow } from "zustand/shallow"
-import { CHARACTERS, sheldonUrl } from "@/config/characters"
+import { CHARACTERS, SHELDON_URL } from "@/config/characters"
 import clsx from "clsx"
 
 export interface IAvatarProps {
@@ -37,7 +37,7 @@ const Avatar = ({ size, player }: IAvatarProps) => {
     CHARACTERS.find((c) => c.name === playerCharacter)?.url || ""
   const opponentAvatarUrl =
     gameType === "single"
-      ? sheldonUrl
+      ? SHELDON_URL
       : CHARACTERS.find((c) => c.name === opponentCharacter)?.url || ""
 
   const avatarUrl = player === "current" ? playerAvatarUrl : opponentAvatarUrl

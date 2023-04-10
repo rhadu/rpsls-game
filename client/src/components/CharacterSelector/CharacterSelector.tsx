@@ -9,6 +9,22 @@ import { useGameService } from "@/contexts/GameServiceContext"
 import { CHARACTERS } from "@/config/characters"
 import Image from "next/image"
 
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      delayChildren: 0.15,
+      staggerChildren: 0.15,
+    },
+  },
+}
+
+const item = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { ease: [0.32, 0.23, 0.4, 0.9] } },
+}
+
 export interface ICharacterSelectorProps {}
 
 const CharacterSelector = ({}: ICharacterSelectorProps) => {
@@ -47,9 +63,15 @@ const CharacterSelector = ({}: ICharacterSelectorProps) => {
         >
           Select a character
         </motion.p>
-        <div className="flex flex-wrap justify-center gap-12 w-[500px]">
+        <motion.div
+          variants={container}
+          initial='hidden'
+          animate='show'
+          className="flex flex-wrap justify-center gap-12 w-[500px]"
+        >
           {CHARACTERS.map(({ name, url }) => (
-            <div
+            <motion.div
+              variants={item}
               key={name}
               className="flex flex-col items-center gap-2 cursor-pointer"
               onClick={() => setCharacter(name)}
@@ -68,9 +90,9 @@ const CharacterSelector = ({}: ICharacterSelectorProps) => {
                 />
               </div>
               <span className="text-white">{name}</span>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
         {character !== "" && (
           <motion.button
             onClick={handleStartGame}

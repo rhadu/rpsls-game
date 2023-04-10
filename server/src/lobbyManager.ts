@@ -117,16 +117,16 @@ export class LobbyManager {
         uid: "computer",
         character: "Sheldon",
       }
-      this.roomJoined(socket, "playerA")
+      this.roomJoined(socket, "playerA", false)
     } else {
       if (!lobby.playerA) {
         lobby.playerA = player
         socket.join(roomId)
-        this.roomJoined(socket, "playerA")
+        this.roomJoined(socket, "playerA", true)
       } else if (!lobby.playerB && lobby.playerA.socketId !== socket.id) {
         lobby.playerB = player
         socket.join(roomId)
-        this.roomJoined(socket, "playerB")
+        this.roomJoined(socket, "playerB", false)
       } else {
         this.roomJoinError(socket)
         socket.emit(EVENTS.SERVER.ROOM_JOINED_ERROR, "Room is full.")
@@ -141,9 +141,9 @@ export class LobbyManager {
     socket.emit(EVENTS.SERVER.ROOM_JOINED_ERROR, "Room is full.")
   }
 
-  private roomJoined(socket: Socket, tag: "playerA" | "playerB") {
+  private roomJoined(socket: Socket, tag: "playerA" | "playerB", showWaitingRoom: boolean) {
     console.log(`ROOM_JOINED > ${tag}`)
-    socket.emit(EVENTS.SERVER.ROOM_JOINED, { tag, startGame: true })
+    socket.emit(EVENTS.SERVER.ROOM_JOINED, { tag, showWaitingRoom })
   }
 
   private startSinglePlayerGame(socket: Socket, roomId: string) {

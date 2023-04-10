@@ -3,8 +3,6 @@ import { motion } from "framer-motion"
 import Logo from "../Logo"
 import { useOpponentState, usePlayerState } from "@/store/player"
 import { shallow } from "zustand/shallow"
-import Image from "next/image"
-import sheldonUrl from "public/avatars/sheldon.png"
 import Avatar from "../Avatar"
 
 export interface IHeaderProps {

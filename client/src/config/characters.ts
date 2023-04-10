@@ -39,4 +39,4 @@ export const CHARACTERS = [
   },
 ]
 
-export const sheldonUrl = sheldonAvatar
+export const SHELDON_URL = sheldonAvatar
