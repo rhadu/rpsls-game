@@ -135,7 +135,7 @@ export default class GameService {
   emitJoinRoom() {
     const uid = this._playerStore.getState().id
     const name = "player"
-    const roomId = `multi-1234`
+    const roomId = `multi-${this._gameStore.getState().room}`
     const character = this._playerStore.getState().character
     this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId, character })
   }

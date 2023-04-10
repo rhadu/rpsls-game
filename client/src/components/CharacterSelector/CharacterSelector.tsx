@@ -8,6 +8,7 @@ import clsx from "clsx"
 import { useGameService } from "@/contexts/GameServiceContext"
 import { CHARACTERS } from "@/config/characters"
 import Image from "next/image"
+import RoomIdInput from "../RoomIdInput"
 
 const container = {
   hidden: { opacity: 0 },
@@ -29,9 +30,12 @@ export interface ICharacterSelectorProps {}
 
 const CharacterSelector = ({}: ICharacterSelectorProps) => {
   const gameService = useGameService()
-  const { gameType } = useGameState(
+  const [roomId, setRoomId] = React.useState<string>("")
+
+  const { gameType, setRoom} = useGameState(
     (state) => ({
       gameType: state.gameType,
+      setRoom: state.setRoom,
     }),
     shallow,
   )
@@ -46,7 +50,13 @@ const CharacterSelector = ({}: ICharacterSelectorProps) => {
 
   function handleStartGame() {
     if (gameType === "single") gameService.emitJoinRoomSingleplayer()
-    else gameService.emitJoinRoom()
+    else {
+      if (roomId !== "") gameService.emitJoinRoom()
+      else {
+        setRoom(roomId)
+        alert("Please enter a room id. If it doesn't exist it will be created")
+      }
+    }
   }
 
   return (
@@ -65,8 +75,8 @@ const CharacterSelector = ({}: ICharacterSelectorProps) => {
         </motion.p>
         <motion.div
           variants={container}
-          initial='hidden'
-          animate='show'
+          initial="hidden"
+          animate="show"
           className="flex flex-wrap justify-center gap-12 w-[500px]"
         >
           {CHARACTERS.map(({ name, url }) => (
@@ -94,14 +104,19 @@ const CharacterSelector = ({}: ICharacterSelectorProps) => {
           ))}
         </motion.div>
         {character !== "" && (
-          <motion.button
-            onClick={handleStartGame}
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center bg-yellow-300 rounded-lg shadow-md cursor-pointer max-w-fit grow"
-          >
-            Start Game
-          </motion.button>
+          <div className="flex gap-8">
+            {gameType === "multi" && (
+              <RoomIdInput roomId={roomId} handleRoomIdInput={setRoomId} />
+            )}
+            <motion.button
+              onClick={handleStartGame}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1, transition: { delay: 0.15 } }}
+              className="flex-1 w-1/2 px-12 py-4 text-xl font-semibold text-center bg-yellow-300 rounded-lg shadow-md cursor-pointer max-w-fit grow"
+            >
+              {gameType === "multi" ? "Join" : "Start"} Game
+            </motion.button>
+          </div>
         )}
       </motion.div>
     </>
