@@ -27,6 +27,7 @@ export default class GameService {
     this.onError = this.onError.bind(this)
     this.onRoomJoinError = this.onRoomJoinError.bind(this)
     this.onRoomJoined = this.onRoomJoined.bind(this)
+    this.onGameEnd = this.onGameEnd.bind(this)
     this.initializeSocketEvents()
   }
 
@@ -40,6 +41,7 @@ export default class GameService {
     this._socket.on(EVENTS.SERVER.ERROR, this.onError)
     this._socket.on(EVENTS.SERVER.ROOM_JOINED_ERROR, this.onRoomJoinError)
     this._socket.on(EVENTS.SERVER.ROOM_JOINED, this.onRoomJoined)
+    this._socket.on(EVENTS.SERVER.GAME_END, this.onGameEnd)
   }
 
   private onStartGame({
@@ -49,15 +51,17 @@ export default class GameService {
     choices: IChoice[]
     players: GamePlayers
   }) {
-    this.resetGameAndPlayerState()
+    console.log(`GAME START`)
     const { opponentTag } = this._opponentStore.getState()
 
     this._opponentStore.setState({
       opponentCharacter: players[opponentTag].character,
     })
 
-    this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
     this._gameStore.setState({ choices })
+    window.setTimeout(() => {
+      this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
+    }, 1000)
   }
 
   private onRoundResult(results: Results) {
@@ -73,6 +77,11 @@ export default class GameService {
     this._opponentStore.setState({ opponentScore: opponent.score })
     this._playerStore.setState({ playerScore: player.score })
     this._gameStore.setState({ roundWinner: results.winner })
+  }
+
+  private onGameEnd(winner: PlayerTag) {
+    // alert(`${winner} has won the GAME`)
+    this._gameStore.setState({ gameWinner: winner })
   }
 
   private onPlayerDisconnected(status: GameState) {
@@ -98,11 +107,28 @@ export default class GameService {
     tag: PlayerTag
     startGame: boolean
   }) {
+    console.log(`PLAYER JOINED -> ${tag}`)
+    this.resetGameAndPlayerState()
+
     const opponentTag: PlayerTag = tag === "playerA" ? "playerB" : "playerA"
     this._playerStore.setState({ playerTag: tag })
     this._opponentStore.setState({ opponentTag })
     this._gameStore.setState({ gameStarted: true })
     this._gameStore.setState({ gameState: GameState.WAITING_PLAYERS })
+  }
+
+  playAgain() {
+    this.resetGameAndPlayerState()
+    const gameType = this._gameStore.getState().gameType
+
+    if (gameType === "multi") {
+      this._socket.emit(EVENTS.CLIENT.CLEAN_ROOM, {})
+      this.emitJoinRoom()
+    } else if (gameType === "single") {
+      this.emitJoinRoomSingleplayer()
+    } else {
+      alert("No game type selected, please return home")
+    }
   }
 
   emitJoinRoom() {
@@ -134,12 +160,17 @@ export default class GameService {
 
   resetGameAndPlayerState() {
     this.resetRound()
+    this._playerStore.setState({ playerTag: undefined })
+    this._opponentStore.setState({ opponentTag: undefined })
     this._playerStore.setState({ playerScore: 0 })
     this._opponentStore.setState({ opponentScore: 0 })
+    this._gameStore.setState({ gameWinner: undefined })
+    this._gameStore.setState({ roundCount: 0 })
   }
 
   resetRound() {
     this._gameStore.setState({ roundWinner: "" })
     this._opponentStore.setState({ opponentChoice: null })
+    // this._playerStore.setState({ playerChoice: null })
   }
 }

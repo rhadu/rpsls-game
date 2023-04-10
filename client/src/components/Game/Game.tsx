@@ -9,6 +9,7 @@ import ChoiceSelection from "@/components/ChoiceSelection"
 import MatchupIntro from "@/components/MatchupIntro"
 import ResultsDisplay from "@/components/ResultsDisplay"
 import { shallow } from "zustand/shallow"
+import GameWinner from "@/components/GameWinner"
 
 export interface IGameProps {}
 
@@ -21,6 +22,7 @@ const uiOptions: Record<GameState, ReactNode> = {
   [GameState.RESULTS_DISPLAY]: (
     <ResultsDisplay key={GameState.RESULTS_DISPLAY} />
   ),
+  [GameState.GAME_WINNER]: <GameWinner key={GameState.GAME_WINNER} />,
 }
 
 const Game = ({}: IGameProps) => {

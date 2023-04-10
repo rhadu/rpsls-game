@@ -9,6 +9,7 @@ export const useGameState = create<{
   roundCount: number
   setRoundCount: (roundCount: number) => void
   roundWinner: PlayerTag | "draw" | ""
+  gameWinner: PlayerTag | undefined
   gameState: GameState
   setGameState: (state: GameState) => void
   gameStarted: boolean
@@ -23,6 +24,7 @@ export const useGameState = create<{
   roundCount: 0,
   setRoundCount: (roundCount) => set({ roundCount: roundCount }),
   roundWinner: "",
+  gameWinner: undefined,
   gameState: GameState.WAITING_PLAYERS,
   setGameState: (state: GameState) => set({ gameState: state }),
   gameStarted: false,

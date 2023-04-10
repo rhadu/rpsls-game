@@ -3,6 +3,7 @@ export enum GameState {
   MATCHUP_INTRO = "MATCHUP_INTRO",
   CHOICE_SELECTION = "CHOICE_SELECTION",
   RESULTS_DISPLAY = "RESULTS_DISPLAY",
+  GAME_WINNER = "GAME_WINNER",
 }
 
 export interface IChoice {

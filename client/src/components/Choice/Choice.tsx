@@ -3,7 +3,7 @@ import React, { MouseEventHandler } from "react"
 
 export interface IChoiceProps {
   id: number | undefined
-  name: string
+  name?: string
   syncAnimationId?: string
   size?: string
   handleClick?: MouseEventHandler<HTMLElement>
@@ -18,7 +18,7 @@ function capitalizeFirstLetter(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-const Choice = ({ size, name, handleClick, syncAnimationId }: IChoiceProps) => {
+const Choice = ({ size, name = '', handleClick, syncAnimationId }: IChoiceProps) => {
   return (
     <motion.div
       layoutId={syncAnimationId}

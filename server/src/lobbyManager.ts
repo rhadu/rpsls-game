@@ -3,7 +3,7 @@ import { Choice, Lobby, Results } from "./types/game"
 import { SINGLE_PLAYER_PREFIX } from "./config/constants"
 import EVENTS from "./config/events"
 import { determineWinner } from "./utils/game"
-import { choices } from "./config/data"
+import { choices, gameDefaults } from "./config/data"
 
 const createLobby = (): Lobby => ({
   playerA: null,
@@ -51,6 +51,10 @@ export class LobbyManager {
           this.playerMakesChoice(socket, choiceId)
         },
       )
+
+      socket.on(EVENTS.CLIENT.CLEAN_ROOM, () => {
+        this.cleanRoom(socket.id)
+      })
 
       socket.on(EVENTS.disconnect, () => {
         this.playerDisconnects(socket.id)
@@ -138,16 +142,20 @@ export class LobbyManager {
   }
 
   private roomJoined(socket: Socket, tag: "playerA" | "playerB") {
+    console.log(`ROOM_JOINED > ${tag}`)
     socket.emit(EVENTS.SERVER.ROOM_JOINED, { tag, startGame: true })
   }
 
   private startSinglePlayerGame(socket: Socket, roomId: string) {
     const players = this.getRoomPlayers(roomId)
+    console.log(`START GAME -> ${roomId}`)
     socket.emit(EVENTS.SERVER.START_GAME, { choices, players })
   }
 
   private startMultiPlayerGame(roomId: string) {
     const players = this.getRoomPlayers(roomId)
+    console.log(`START GAME -> ${roomId}`)
+
     this.io.to(roomId).emit(EVENTS.SERVER.START_GAME, { choices, players })
   }
 
@@ -231,6 +239,26 @@ export class LobbyManager {
 
         lobby.choices.playerA = null
         lobby.choices.playerB = null
+
+        this.checkWinner(socket, roomId)
+      }
+    }
+  }
+
+  checkWinner(socket: Socket, roomId: string) {
+    const lobby = this.lobbies[roomId]
+
+    if (
+      lobby.scores.playerA === gameDefaults.gameRounds ||
+      lobby.scores.playerB === gameDefaults.gameRounds
+    ) {
+      const winner =
+        lobby.scores.playerA === gameDefaults.gameRounds ? "playerA" : "playerB"
+
+      if (isSinglePlayerGame(roomId)) {
+        socket.emit(EVENTS.SERVER.GAME_END, winner)
+      } else {
+        this.io.to(roomId).emit(EVENTS.SERVER.GAME_END, winner)
       }
     }
   }
@@ -248,6 +276,24 @@ export class LobbyManager {
     this.resetJoinedRoom(socketId)
 
     console.log("User disconnected:", socketId)
+  }
+
+  cleanRoom(socketId: string) {
+    const roomId = this.playerRoomMap[socketId]
+
+    const lobby = this.lobbies[roomId]
+
+    if (lobby) {
+      if (lobby.playerA !== null && lobby.playerB === null) {
+        return
+      } else {
+        if (lobby.playerA?.socketId)
+          delete this.playerRoomMap[lobby.playerA?.socketId]
+        if (lobby.playerB?.socketId)
+          delete this.playerRoomMap[lobby.playerB?.socketId]
+        delete this.lobbies[roomId]
+      }
+    }
   }
 
   resetJoinedRoom(socketId: string) {

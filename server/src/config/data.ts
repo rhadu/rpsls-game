@@ -9,5 +9,5 @@ export const choices: Choice[] = [
 ]
 
 export const gameDefaults = {
-  rounds: 3
+  gameRounds: 3
 }

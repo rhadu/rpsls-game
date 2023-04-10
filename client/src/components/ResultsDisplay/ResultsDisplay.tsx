@@ -16,10 +16,12 @@ export interface IResultsDisplayProps {}
 const ResultsDisplay = ({}: IResultsDisplayProps) => {
   const gameService = useGameService()
 
-  const { gameState, roundWinner } = useGameState(
+  const { gameState, setGameState, roundWinner, gameWinner } = useGameState(
     (state) => ({
       gameState: state.gameState,
+      setGameState: state.setGameState,
       roundWinner: state.roundWinner,
+      gameWinner: state.gameWinner,
     }),
     shallow,
   )
@@ -36,6 +38,17 @@ const ResultsDisplay = ({}: IResultsDisplayProps) => {
     }),
     shallow,
   )
+
+  React.useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      if (gameWinner) {
+        setGameState(GameState.GAME_WINNER)
+      }
+    }, 2200)
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [gameWinner, setGameState])
 
   const roundWinnerMessage =
     roundWinner === "draw"
@@ -64,7 +77,7 @@ const ResultsDisplay = ({}: IResultsDisplayProps) => {
             id={playerChoice?.id}
             size="200px"
             syncAnimationId={`player-choice-${playerChoice?.name}`}
-            name={playerChoice!.name}
+            name={playerChoice?.name}
           />
           {!opponentChoice && gameState !== GameState.CHOICE_SELECTION && (
             <motion.div
@@ -82,18 +95,20 @@ const ResultsDisplay = ({}: IResultsDisplayProps) => {
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1, transition: { delay: 0.8 } }}
-            exit={{ y: 20, opacity: 0 }}
+            exit={{ y: 0, opacity: 0 }}
             className="flex flex-col items-center gap-10"
           >
             <div className="text-3xl font-bold text-yellow-300">
               {roundWinnerMessage}
             </div>
-            <button
-              onClick={handleNextRound}
-              className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"
-            >
-              Next Round
-            </button>
+            {!gameWinner && (
+              <button
+                onClick={handleNextRound}
+                className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"
+              >
+                Next Round
+              </button>
+            )}
           </motion.div>
         )}
 
