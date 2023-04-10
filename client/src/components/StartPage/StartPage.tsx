@@ -42,20 +42,18 @@ const StartPage = ({}: IStartPageProps) => {
           </p>
         </motion.div>
         <div className="flex gap-12">
-          <Link
-            href="/single"
+          <button
             onClick={() => handleGameModeSelection("single")}
             className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"
           >
             VS. Sheldon
-          </Link>
-          <Link
-            href="/single"
+          </button>
+          <button
             onClick={() => handleGameModeSelection("multi")}
             className="flex-1 w-full px-12 py-4 text-xl font-semibold text-center transition-all bg-yellow-300 rounded-lg shadow-md cursor-pointer grow hover:scale-105"
           >
             VS. Friend or Foe
-          </Link>
+          </button>
         </div>
       </motion.div>
       <motion.div

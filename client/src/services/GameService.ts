@@ -19,7 +19,8 @@ export default class GameService {
     this.onRoundResult = this.onRoundResult.bind(this)
     this.onPlayerDisconnected = this.onPlayerDisconnected.bind(this)
     this.onError = this.onError.bind(this)
-    this.onPlayerTag = this.onPlayerTag.bind(this)
+    this.onRoomJoinError = this.onRoomJoinError.bind(this)
+    this.onRoomJoined = this.onRoomJoined.bind(this)
     this.initializeSocketEvents()
   }
 
@@ -31,7 +32,8 @@ export default class GameService {
       this.onPlayerDisconnected,
     )
     this._socket.on(EVENTS.SERVER.ERROR, this.onError)
-    this._socket.on(EVENTS.SERVER.PLAYER_TAG, this.onPlayerTag)
+    this._socket.on(EVENTS.SERVER.ROOM_JOINED_ERROR, this.onRoomJoinError)
+    this._socket.on(EVENTS.SERVER.ROOM_JOINED, this.onRoomJoined)
   }
 
   private onStartGame({ choices }: { choices: IChoice[] }) {
@@ -64,19 +66,25 @@ export default class GameService {
     //TODO handle onError
     alert(errorMessage)
   }
+  
+  private onRoomJoinError(errorMessage: string) {
+    //TODO handle onError
+    alert(errorMessage)
+  }
 
-  private onPlayerTag({ tag }: { tag: PlayerTag }) {
+  // rename to Player_Joined
+  private onRoomJoined({ tag, startGame }: { tag: PlayerTag, startGame: boolean }) {
     const opponentTag: PlayerTag = tag === "playerA" ? "playerB" : "playerA"
     this._playerStore.setState({ playerTag: tag })
     this._opponentStore.setState({ opponentTag })
+    this._gameStore.setState({ gameStarted: true })
+    this._gameStore.setState({ gameState: GameState.WAITING_PLAYERS })
   }
 
   emitJoinRoom() {
     const uid = this._playerStore.getState().id
     const name = "Howard"
     const roomId = `multi-1234`
-
-    this._gameStore.setState({ gameState: GameState.WAITING_PLAYERS })
     this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId })
   }
 

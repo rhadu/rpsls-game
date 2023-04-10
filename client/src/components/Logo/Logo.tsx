@@ -1,13 +1,22 @@
+import useGameState from "@/store/game"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { shallow } from "zustand/shallow"
 
 export interface ILogoProps {
   width?: number
 }
 
 function Logo({ width = 100 }: ILogoProps) {
+  //TODO call GameService to reset game
+  const { setGameStarted } = useGameState(
+    (state) => ({
+      setGameStarted: state.setGameStarted,
+    }),
+    shallow,
+  )
   return (
-    <Link href={"/"}>
+    <button onClick={() => setGameStarted(false)}>
       <motion.svg
         layoutId="logo"
         xmlns="http://www.w3.org/2000/svg"
@@ -21,7 +30,7 @@ function Logo({ width = 100 }: ILogoProps) {
         ></path>
         <path stroke="#fff" strokeWidth="4" d="M1 1H125V120H1z"></path>
       </motion.svg>
-    </Link>
+    </button>
   )
 }
 

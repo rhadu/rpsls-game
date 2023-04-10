@@ -11,6 +11,8 @@ export const useGameState = create<{
   roundWinner: PlayerTag | "draw" | ""
   gameState: GameState
   setGameState: (state: GameState) => void
+  gameStarted: boolean
+  setGameStarted: (flag: boolean) => void
 }>((set) => ({
   room: "",
   setRoom: (roomId) => set({ room: roomId }),
@@ -21,6 +23,8 @@ export const useGameState = create<{
   roundWinner: "",
   gameState: GameState.WAITING_PLAYERS,
   setGameState: (state: GameState) => set({ gameState: state }),
+  gameStarted: false,
+  setGameStarted: (flag) => set({ gameStarted: flag }),
 }))
 
 export default useGameState

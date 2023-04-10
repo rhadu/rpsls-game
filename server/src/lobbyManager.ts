@@ -63,6 +63,11 @@ export class LobbyManager {
       this.lobbies[roomId] = createLobby()
     }
 
+    if (this.isRoomFull(this.lobbies[roomId])) {
+      this.roomJoinError(socket)
+      return
+    }
+
     this.addPlayerToLobby(socket, uid, name, roomId)
 
     if (isSinglePlayerGame(roomId)) {
@@ -70,6 +75,10 @@ export class LobbyManager {
     } else if (this.areBothPlayersPresent(roomId)) {
       this.startMultiPlayerGame(roomId)
     }
+  }
+
+  private isRoomFull(lobby: Lobby): boolean {
+    return lobby.playerA !== null && lobby.playerB !== null
   }
 
   private addPlayerToLobby(
@@ -88,18 +97,19 @@ export class LobbyManager {
         name: "Computer",
         uid: "computer",
       }
-      this.emitPlayerTag(socket, "playerA")
+      this.roomJoined(socket, "playerA")
     } else {
       if (!lobby.playerA) {
         lobby.playerA = player
         socket.join(roomId)
-        this.emitPlayerTag(socket, "playerA")
+        this.roomJoined(socket, "playerA")
       } else if (!lobby.playerB && lobby.playerA.socketId !== socket.id) {
         lobby.playerB = player
         socket.join(roomId)
-        this.emitPlayerTag(socket, "playerB")
+        this.roomJoined(socket, "playerB")
       } else {
-        socket.emit(EVENTS.SERVER.ERROR, "Room is full.")
+        this.roomJoinError(socket)
+        socket.emit(EVENTS.SERVER.ROOM_JOINED_ERROR, "Room is full.")
       }
     }
 
@@ -107,8 +117,12 @@ export class LobbyManager {
     this.playerRoomMap[socket.id] = roomId
   }
 
-  private emitPlayerTag(socket: Socket, tag: "playerA" | "playerB") {
-    socket.emit(EVENTS.SERVER.PLAYER_TAG, { tag })
+  private roomJoinError(socket: Socket) {
+    socket.emit(EVENTS.SERVER.ROOM_JOINED_ERROR, "Room is full.")
+  }
+
+  private roomJoined(socket: Socket, tag: "playerA" | "playerB") {
+    socket.emit(EVENTS.SERVER.ROOM_JOINED, { tag, startGame: true })
   }
 
   private startSinglePlayerGame(socket: Socket, roomId: string) {
@@ -203,7 +217,6 @@ export class LobbyManager {
       return
     }
 
-    const lobby = this.lobbies[roomId]
     this.io.to(roomId).emit(EVENTS.SERVER.PLAYER_DISCONNECTED)
 
     this.resetJoinedRoom(socketId)
@@ -225,9 +238,9 @@ export class LobbyManager {
       (lobby.playerA?.socketId === socketId ||
         lobby.playerB?.socketId === socketId)
     ) {
-      delete this.playerRoomMap[socketId]
       delete this.lobbies[roomId]
     }
+    delete this.playerRoomMap[socketId]
   }
 
   getAllLobies() {
