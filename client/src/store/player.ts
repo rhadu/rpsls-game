@@ -22,7 +22,7 @@ export const usePlayerState = create<{
   username: "",
   setUsername: (username) => set({ username }),
   character: "",
-  setCharacter:(character) => set({ character }),
+  setCharacter: (character) => set({ character }),
   id: nanoid(),
   room: "",
   playerTag: null as unknown as PlayerTag,
@@ -40,6 +40,8 @@ export const usePlayerState = create<{
 export const useOpponentState = create<{
   opponentName: string
   setOpponentName: (name: string) => void
+  opponentCharacter: string
+  setOpponentCharacter: (opponentCharacter: string) => void
   opponentChoice: IChoice | null
   setOpponentChoice: (choice: IChoice) => void
   opponentTag: PlayerTag
@@ -49,6 +51,8 @@ export const useOpponentState = create<{
 }>((set) => ({
   opponentName: ``,
   setOpponentName: (name) => set({ opponentName: name }),
+  opponentCharacter: "",
+  setOpponentCharacter: (opponentCharacter) => set({ opponentCharacter }),
   opponentChoice: null,
   setOpponentChoice: (choice: IChoice) => set({ opponentChoice: choice }),
   opponentTag: null as unknown as PlayerTag,

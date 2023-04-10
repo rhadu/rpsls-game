@@ -34,12 +34,14 @@ export class LobbyManager {
           uid,
           name,
           roomId,
+          character,
         }: {
           uid: string
           name: string
           roomId: string
+          character: string
         }) => {
-          this.joinLobby(socket, uid, name, roomId)
+          this.joinLobby({ socket, uid, name, roomId, character })
         },
       )
 
@@ -56,7 +58,19 @@ export class LobbyManager {
     })
   }
 
-  joinLobby(socket: Socket, uid: string, name: string, roomId: string) {
+  joinLobby({
+    socket,
+    uid,
+    name,
+    roomId,
+    character,
+  }: {
+    socket: Socket
+    uid: string
+    name: string
+    roomId: string
+    character: string
+  }) {
     this.resetJoinedRoom(socket.id)
 
     if (!this.lobbies[roomId]) {
@@ -68,7 +82,7 @@ export class LobbyManager {
       return
     }
 
-    this.addPlayerToLobby(socket, uid, name, roomId)
+    this.addPlayerToLobby(socket, uid, name, roomId, character)
 
     if (isSinglePlayerGame(roomId)) {
       this.startSinglePlayerGame(socket, roomId)
@@ -86,9 +100,10 @@ export class LobbyManager {
     uid: string,
     name: string,
     roomId: string,
+    character: string,
   ) {
     const lobby = this.lobbies[roomId]
-    const player = { socketId: socket.id, uid, name }
+    const player = { socketId: socket.id, uid, name, character }
 
     if (isSinglePlayerGame(roomId)) {
       lobby.playerA = player
@@ -96,6 +111,7 @@ export class LobbyManager {
         socketId: "computer",
         name: "Computer",
         uid: "computer",
+        character: "Sheldon",
       }
       this.roomJoined(socket, "playerA")
     } else {
@@ -126,11 +142,21 @@ export class LobbyManager {
   }
 
   private startSinglePlayerGame(socket: Socket, roomId: string) {
-    socket.emit(EVENTS.SERVER.START_GAME, { choices })
+    const players = this.getRoomPlayers(roomId)
+    socket.emit(EVENTS.SERVER.START_GAME, { choices, players })
   }
 
   private startMultiPlayerGame(roomId: string) {
-    this.io.to(roomId).emit(EVENTS.SERVER.START_GAME, { choices })
+    const players = this.getRoomPlayers(roomId)
+    this.io.to(roomId).emit(EVENTS.SERVER.START_GAME, { choices, players })
+  }
+
+  private getRoomPlayers(roomId: string) {
+    const lobby = this.lobbies[roomId]
+    return {
+      playerA: lobby.playerA,
+      playerB: lobby.playerB,
+    }
   }
 
   private areBothPlayersPresent(roomId: string): boolean {

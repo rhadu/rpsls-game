@@ -61,7 +61,10 @@ const CharacterSelector = ({}: ICharacterSelectorProps) => {
   return (
     <>
       <Spacer size="100px" />
-      <motion.div exit={{}} className="flex flex-col items-center gap-16">
+      <motion.div
+        exit={{ y: 20, opacity: 0 }}
+        className="flex flex-col items-center gap-16"
+      >
         <motion.p
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

@@ -4,7 +4,13 @@ import { useSocket } from "@/contexts/SocketContext"
 import useGameState from "@/store/game"
 import { useOpponentState, usePlayerState } from "@/store/player"
 import EVENTS from "@/config/events"
-import { GameState, IChoice, Results, PlayerTag } from "@/types/game"
+import {
+  GameState,
+  IChoice,
+  Results,
+  PlayerTag,
+  GamePlayers,
+} from "@/types/game"
 import { SINGLE_PLAYER_PREFIX } from "@/config/constants"
 
 export default class GameService {
@@ -36,8 +42,20 @@ export default class GameService {
     this._socket.on(EVENTS.SERVER.ROOM_JOINED, this.onRoomJoined)
   }
 
-  private onStartGame({ choices }: { choices: IChoice[] }) {
+  private onStartGame({
+    choices,
+    players,
+  }: {
+    choices: IChoice[]
+    players: GamePlayers
+  }) {
     this.resetGameAndPlayerState()
+    const { opponentTag } = this._opponentStore.getState()
+
+    this._opponentStore.setState({
+      opponentCharacter: players[opponentTag].character,
+    })
+
     this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
     this._gameStore.setState({ choices })
   }
@@ -66,14 +84,20 @@ export default class GameService {
     //TODO handle onError
     alert(errorMessage)
   }
-  
+
   private onRoomJoinError(errorMessage: string) {
     //TODO handle onError
     alert(errorMessage)
   }
 
   // rename to Player_Joined
-  private onRoomJoined({ tag, startGame }: { tag: PlayerTag, startGame: boolean }) {
+  private onRoomJoined({
+    tag,
+    startGame,
+  }: {
+    tag: PlayerTag
+    startGame: boolean
+  }) {
     const opponentTag: PlayerTag = tag === "playerA" ? "playerB" : "playerA"
     this._playerStore.setState({ playerTag: tag })
     this._opponentStore.setState({ opponentTag })
@@ -83,18 +107,20 @@ export default class GameService {
 
   emitJoinRoom() {
     const uid = this._playerStore.getState().id
-    const name = "Howard"
+    const name = "player"
     const roomId = `multi-1234`
-    this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId })
+    const character = this._playerStore.getState().character
+    this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId, character })
   }
 
   emitJoinRoomSingleplayer() {
     const uid = this._playerStore.getState().id
-    const name = "Leonard"
+    const name = "player"
     const roomId = `${SINGLE_PLAYER_PREFIX}-${uid}`
+    const character = this._playerStore.getState().character
 
     this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
-    this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId }, () => {})
+    this._socket.emit(EVENTS.CLIENT.JOIN_ROOM, { uid, name, roomId, character })
   }
 
   emitPlayerChoice(choiceId: number) {

@@ -5,14 +5,15 @@ export type Choice = {
 
 export type Player = {
   socketId: string
-  uid: string; 
+  uid: string
   name: string
+  character: string
 }
 
 export type Results = {
   winner: string
-  playerA: { uid: string; choice: number; score: number };
-  playerB: { uid: string; choice: number; score: number };
+  playerA: { uid: string; choice: number; score: number }
+  playerB: { uid: string; choice: number; score: number }
   round: number
 }
 

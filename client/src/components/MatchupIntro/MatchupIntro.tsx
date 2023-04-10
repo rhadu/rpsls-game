@@ -1,17 +1,38 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react"
 import { motion } from "framer-motion"
 import useGameState from "@/store/game"
 import { GameState } from "@/types/game"
 
 import Header from "../Header"
-import { shallow } from 'zustand/shallow'
+import { shallow } from "zustand/shallow"
+import { useOpponentState, usePlayerState } from "@/store/player"
+import sheldonUrl from "public/avatars/sheldon.png"
+import Image from 'next/image'
 
 export interface IMatchupIntroProps {}
 
 const MatchupIntro = ({}: IMatchupIntroProps) => {
-  const { setGameState } = useGameState((state) => ({
-    setGameState: state.setGameState,
-  }), shallow)
+  const { setGameState } = useGameState(
+    (state) => ({
+      setGameState: state.setGameState,
+    }),
+    shallow,
+  )
+
+  const { playerCharacter } = usePlayerState(
+    (state) => ({
+      playerCharacter: state.character,
+    }),
+    shallow,
+  )
+
+  const { opponentCharacter } = useOpponentState(
+    (state) => ({
+      opponentCharacter: state.opponentCharacter,
+    }),
+    shallow,
+  )
 
   React.useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -43,7 +64,11 @@ const MatchupIntro = ({}: IMatchupIntroProps) => {
           }}
           layoutId="playerA"
           className="rounded-full w-[200px] bg-yellow-300  h-[200px]"
-        ></motion.div>
+        >
+          <motion.span className="text-3xl text-white ">
+            {playerCharacter}
+          </motion.span>
+        </motion.div>
         <motion.span
           initial={{
             y: 20,
@@ -81,7 +106,13 @@ const MatchupIntro = ({}: IMatchupIntroProps) => {
           }}
           layoutId="playerB"
           className="rounded-full w-[200px] bg-yellow-300  h-[200px]"
-        ></motion.div>
+        >
+          <Image
+            src={sheldonUrl}
+            className="mx-auto w-[200px] h-[200px] rounded-full border-4 border-yellow-300"
+            alt="Avatar"
+          />
+        </motion.div>
       </motion.div>
       <div className="h-[200px]"></div>
     </motion.div>

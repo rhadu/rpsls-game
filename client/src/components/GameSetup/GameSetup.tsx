@@ -25,15 +25,17 @@ function GameSetup({}: IGameSetupProps) {
   }
 
   return (
-    <motion.div exit={{}} className="flex flex-col items-center h-full">
+    <motion.div className="flex flex-col items-center h-full">
       <Header />
-      <AnimatePresence mode="wait">
-        {!gameType ? (
-          <GameTypeSelector key="gameTypeSelector" />
-        ) : (
-          <CharacterSelector key="characterSelector" />
-        )}
-      </AnimatePresence>
+      <motion.div exit={{ y: 20, opacity: 0 }}>
+        <AnimatePresence mode="wait">
+          {!gameType ? (
+            <GameTypeSelector key="gameTypeSelector" />
+          ) : (
+            <CharacterSelector key="characterSelector" />
+          )}
+        </AnimatePresence>
+      </motion.div>
     </motion.div>
   )
 }

@@ -10,6 +10,18 @@ export interface IChoice {
   name: string
 }
 
+export type Player = {
+  socketId: string
+  uid: string
+  name: string
+  character: string
+}
+
+export type GamePlayers = {
+  playerA: Player
+  playerB: Player
+}
+
 export type Results = {
   winner: PlayerTag | "draw"
   playerA: { uid: string; choice: number; score: number }
