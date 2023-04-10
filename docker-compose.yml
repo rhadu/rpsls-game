@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  rpsls-client:
+    image: rpsls-game-client
+    container_name: rpsls-client
+    hostname: rpsls-client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    depends_on:
+      - rpsls-server
+    environment:
+      - NEXT_PUBLIC_SOCKET_SERVER_URL="ws://localhost:9000"
+    ports:
+      - "3000:3000"
+
+  rpsls-server:
+    image: rpsls-game-server
+    container_name: rpsls-server
+    hostname: rpsls-server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
