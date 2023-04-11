@@ -15,8 +15,8 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      delayChildren: 0.15,
-      staggerChildren: 0.15,
+      delayChildren: 0.25,
+      staggerChildren: 0.1,
     },
   },
 }
@@ -32,7 +32,7 @@ const CharacterSelector = ({}: ICharacterSelectorProps) => {
   const gameService = useGameService()
   const [roomId, setRoomId] = React.useState<string>("")
 
-  const { gameType, setRoom} = useGameState(
+  const { gameType, setRoom } = useGameState(
     (state) => ({
       gameType: state.gameType,
       setRoom: state.setRoom,
