@@ -58,8 +58,6 @@ https://rpsls-game-nine.vercel.app/
 
 ### Installation
 
-Provide step-by-step instructions to get the development environment running.
-
 1. Clone the repository
 
    ```
@@ -73,8 +71,6 @@ Provide step-by-step instructions to get the development environment running.
    ```
 
 ## Running the Application
-
-Describe how to run the application in development mode:
 
 1. Start the server and the Next.js Application
 
@@ -123,8 +119,6 @@ Describe how to run the application in development mode:
 TBA
 
 ## Code Structure
-
-In this section, explain the organization and structure of your code and project files:
 
 ```
 project
