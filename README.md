@@ -7,20 +7,33 @@ Rock Paper Scissors Lizard Spock (RPSLS) is an exciting and modern twist on the 
 ## Table of Contents
 
 1. [Demo](#demo)
-2. [Technologies](#technologies)
-3. [Getting Started](#getting-started)
+2. [Features](#features)
+3. [Technologies](#technologies)
+4. [Getting Started](#getting-started)
    - [Prerequisites](#prerequisites)
    - [Installation](#installation)
-4. [Running the Application](#running-the-application)
-5. [Docker Integration](#docker-integration)
-6. [Testing](#testing)
-7. [Features](#features)
+5. [Running the Application](#running-the-application)
+6. [Docker Integration](#docker-integration)
+7. [Testing](#testing)
 8. [Code Structure](#code-structure)
 9. [License](#license)
 
 ## Demo
 
 https://rpsls-game-nine.vercel.app/
+
+## Features
+
+- **Singleplayer Mode**:
+
+  - Click the **.Vs Sheldon** button to start a game against the computer, playing as Sheldon Cooper from the Big Bang Theory. Hone your skills and try to beat the virtual Sheldon in this fun and engaging singleplayer mode.
+
+- **Real-time Multiplayer Mode**:
+
+  - Click the **Vs. Friend or Foe** button to invite a friend (or foe) and challenge them in real-time. With seamless communication powered by Socket.IO, players can experience a smooth and responsive multiplayer experience.
+
+- **Character Selector**:
+  - Delight in playing as your favorite characters from the Big Bang Theory. Choose from Leonard, Howard, Raj, Penny, Bernadette or Amy and show off your skills as you triumph over your opponents in the classic game
 
 ## Technologies
 
@@ -29,12 +42,13 @@ https://rpsls-game-nine.vercel.app/
 3. [TypeScript](https://www.typescriptlang.org/)
 4. [Express](https://expressjs.com/)
 5. [Node.js](https://nodejs.org/)
-6. [Yarn](https://yarnpkg.com/)
-7. [Zustand](https://zustand-demo.pmnd.rs/)
-8. [Tawilwind](https://tailwindcss.com/)
-9. [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) (TBA)
-10. [Prettier](https://prettier.io/) and [ESLint](https://eslint.org/)
-11. [Docker](https://www.docker.com/)
+6. [Socket.io](https://socket.io/)
+7. [Yarn](https://yarnpkg.com/)
+8. [Zustand](https://zustand-demo.pmnd.rs/)
+9. [Tawilwind](https://tailwindcss.com/)
+10. [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) (TBA)
+11. [Prettier](https://prettier.io/) and [ESLint](https://eslint.org/)
+12. [Docker](https://www.docker.com/)
 
 ## Getting Started
 
@@ -107,21 +121,6 @@ Describe how to run the application in development mode:
 ## Testing
 
 TBA
-
-## Features
-
-In this section, highlight the core features of the Rock Paper Scissors Lizard Spock (RPSLS) application:
-
-- **Singleplayer Mode**:
-
-  - Click the **.Vs Sheldon** button to start a game against the computer, playing as Sheldon Cooper from the Big Bang Theory. Hone your skills and try to beat the virtual Sheldon in this fun and engaging singleplayer mode.
-
-- **Real-time Multiplayer Mode**:
-
-  - Click the **Vs. Friend or Foe** button to invite a friend (or foe) and challenge them in real-time. With seamless communication powered by Socket.IO, players can experience a smooth and responsive multiplayer experience.
-
-- **Character Selector**:
-  - Delight in playing as your favorite characters from the Big Bang Theory. Choose from Leonard, Howard, Raj, Penny, Bernadette or Amy and show off your skills as you triumph over your opponents in the classic game
 
 ## Code Structure
 
