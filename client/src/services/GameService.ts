@@ -44,7 +44,7 @@ export default class GameService {
     this._socket.on(EVENTS.SERVER.GAME_END, this.onGameEnd)
   }
 
-  private onStartGame({
+  onStartGame({
     choices,
     players,
   }: {
@@ -63,7 +63,7 @@ export default class GameService {
     this._gameStore.setState({ gameState: GameState.MATCHUP_INTRO })
   }
 
-  private onRoundResult(results: Results) {
+  onRoundResult(results: Results) {
     const { choices } = this._gameStore.getState()
     const { opponentTag } = this._opponentStore.getState()
     const { playerTag } = this._playerStore.getState()
@@ -78,28 +78,28 @@ export default class GameService {
     this._gameStore.setState({ roundWinner: results.winner })
   }
 
-  private onGameEnd(winner: PlayerTag) {
+  onGameEnd(winner: PlayerTag) {
     // alert(`${winner} has won the GAME`)
     this._gameStore.setState({ gameWinner: winner })
   }
 
-  private onPlayerDisconnected(status: GameState) {
+  onPlayerDisconnected(status: GameState) {
     //TODO handle disconnect
     alert("opponent disconnected")
   }
 
-  private onError(errorMessage: string) {
+  onError(errorMessage: string) {
     //TODO handle onError
     alert(errorMessage)
   }
 
-  private onRoomJoinError(errorMessage: string) {
+  onRoomJoinError(errorMessage: string) {
     //TODO handle onError
     alert(errorMessage)
   }
 
   // rename to Player_Joined
-  private onRoomJoined({
+  onRoomJoined({
     tag,
     showWaitingRoom = false,
   }: {
