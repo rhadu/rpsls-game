@@ -46,7 +46,7 @@ https://rpsls-game-nine.vercel.app/
 7. [Yarn](https://yarnpkg.com/)
 8. [Zustand](https://zustand-demo.pmnd.rs/)
 9. [Tawilwind](https://tailwindcss.com/)
-10. [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) (TBA)
+10. [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro)
 11. [Prettier](https://prettier.io/) and [ESLint](https://eslint.org/)
 12. [Docker](https://www.docker.com/)
 
@@ -116,7 +116,14 @@ https://rpsls-game-nine.vercel.app/
 
 ## Testing
 
-TBA
+1. Navigate to the client directory
+   ```
+   cd client/
+   ```
+2. Run the test suite
+   ```
+   yarn test
+   ```
 
 ## Code Structure
 
